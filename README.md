@@ -76,3 +76,7 @@ Continue with your own configuration. Here as an example
 
 # Backup of jobs on Raspberry for persistence on another system or Raspberry
 
+See here if you have a USB SD card adapter: [https:// ](https://all3dp.com/2/back-up-raspberry-pi-sd-card/)
+
+Or here if you just have an external hard drive : (not tested at onece) https://www.framboise314.fr/dupliquez-la-carte-sd-de-votre-raspberry-pi-avec-rpi-clone/
+
