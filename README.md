@@ -72,7 +72,30 @@ Refresh your browser page and see login page to your own Odoo
 
 Continue with your own configuration. Here as an example
 
+# Open Office
+```
+sudo apt update
+sudo apt install libreoffice
+```
+
 # Visual Studio Code installation
+
+See here to install : https://code.visualstudio.com/docs/setup/raspberry-pi
+```
+sudo apt update
+sudo apt install code
+```
+
+If VS Code is too slow, try this :
+VS Code on Raspberry Pi 4 may be slow with the default setup. A workaround is to disable hardware (GPU) acceleration in VS Code:
+
+    Open the VS Code argv.json file using the Preferences: Configure Runtime Arguments command.
+    Set "disable-hardware-acceleration": true.
+    Restart VS Code.
+
+The "disable-hardware-acceleration": true runtime argument switch has the effect of passing the --disable-gpu command-line argument on VS Code startup.
+Nex
+
 
 # Backup of jobs on Raspberry for persistence on another system or Raspberry
 
