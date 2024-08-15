@@ -7,6 +7,10 @@ Rpi5 has to be initialized with
 See
 
 Or, instead, in case of a breakage (like me), use online installation when the raspberry starts
+- Sometimes the micro SD is unstable (won't boot, for example).
+- This has happened with a 64 GB card, whereas a 32 GB card remains stable. 
+- Too much memory? Or a construction fault?
+If in doubt, I recommend using a 32 GB card.
 
 See guideline here : https://www.raspberrypi.com/documentation/computers/getting-started.html
 
