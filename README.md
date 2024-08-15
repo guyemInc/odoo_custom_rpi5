@@ -15,11 +15,16 @@ Allow ssh access and register local IP access to configure/verify your rpi via a
 ```
 #At start, check disk available :
 df -h | grep "Avail\|dev/"
-    Filesystem      Size  Used Avail Use% Mounted on
-    /dev/mmcblk0p2   57G  5.1G   49G  10% /
-    tmpfs           4.0G   26M  4.0G   1% /dev/shm
-    /dev/mmcblk0p1  510M   75M  436M  15% /boot/firmware
 
+```
+| Location  | 64 Go  |  32 Go |
+|:-----|:--------|:--------|
+| Filesystem    |  Size  Used Avail Use% Mounted on   |   Size  Used Avail Use% Mounted on    |
+|/dev/mmcblk0p2 |  57G  5.1G   49G  10% /             |   29G  4.9G   23G  18% / |
+|tmpfs          | 4.0G   26M  4.0G   1% /dev/shm     |  4.0G   24M  4.0G   1% /dev/shm |
+|/dev/mmcblk0p1 | 510M   75M  436M  15% /boot/firmware     | 510M   75M  436M  15% /boot/firmware  |
+
+```
 # IP ssh access
 pi@raspberrypi:~ $ ifconfig | grep inet
         inet 192.168.1.180  netmask 255.255.255.0  broadcast 192.168.1.255
@@ -39,6 +44,8 @@ sudo raspi-config
 See : https://community.openems.io/t/how-to-install-odoo-on-a-raspberry-pi/2517
 
 Or instead (other details) : https://fr.cyberaxe.org/article/how-to-install-odoo-on-raspberry-pi-os
+
+Postgres and Odoo will take around 2 Gb space on your hard drive !
 
 ```
 sudo apt update -y && sudo apt upgrade -y
@@ -72,12 +79,6 @@ Refresh your browser page and see login page to your own Odoo
 
 Continue with your own configuration. Here as an example
 
-# Open Office
-```
-sudo apt update
-sudo apt install libreoffice
-```
-
 # Visual Studio Code installation
 
 See here to install : https://code.visualstudio.com/docs/setup/raspberry-pi
@@ -85,6 +86,8 @@ See here to install : https://code.visualstudio.com/docs/setup/raspberry-pi
 sudo apt update
 sudo apt install code
 ```
+
+VS Code will take around 1.5 Gb space on your hard drive !
 
 If VS Code is too slow, try this :
 VS Code on Raspberry Pi 4 may be slow with the default setup. A workaround is to disable hardware (GPU) acceleration in VS Code:
@@ -95,6 +98,20 @@ VS Code on Raspberry Pi 4 may be slow with the default setup. A workaround is to
 
 The "disable-hardware-acceleration": true runtime argument switch has the effect of passing the --disable-gpu command-line argument on VS Code startup.
 Nex
+
+
+# Open Office
+
+As much as we love Linux distributions, installing libre office on raspbian is a sign of a significant drop in performance.
+
+If you really want to update Word, Excell, PowerPoint or other documents without altering your raspberry equipment, prefer to use Office365 from your web browser... it would be a shame not to take advantage of the licences of friends who have subscribed to W.
+
+That said, if you prefer Office : 
+
+```
+sudo apt update
+sudo apt install libreoffice
+```
 
 
 # Backup of jobs on Raspberry for persistence on another system or Raspberry
