@@ -43,7 +43,7 @@ sudo raspi-config
 
 ```
 
-# Odoo 16 installation
+# Odoo 16 installation - Without Developpment needs
 
 See : https://community.openems.io/t/how-to-install-odoo-on-a-raspberry-pi/2517
 
@@ -81,7 +81,105 @@ Configure your Odoo database : bdd name, password, email, language
 
 Refresh your browser page and see login page to your own Odoo  
 
-Continue with your own configuration. Here as an example
+Continue with your own configuration. 
+
+# Odoo 16 installation - From github source for developpment needs
+
+## Create a specific folder for odoo version 16 (-b XX below)
+
+cd odooLocalPath repo
+```
+git clone -b 16.0 https://github.com/odoo/odoo.git
+```
+
+On Debian/Ubuntu, the following commands should install the required packages:
+
+```
+cd odoo         #CommunityPath	where clone was done - Like odooLocalPath here
+sudo ./setup/debinstall.sh
+```
+
+## Postgresql Install
+```
+sudo apt install postgresql postgresql-client
+
+sudo -i -u postgres
+        postgres@raspberrypi:~$ createuser -d -R -S pi
+        postgres@raspberrypi:~$ createdb pi
+                exit
+```
+
+## Check versions of :
+```
+python3 --version
+        Python 3.11.2
+pip3 --version
+        pip3 --version
+```
+Install wkhtmltopdf too :
+```
+	sudo apt-get -y install wkhtmltopdf
+```
+
+Launch odoo instance (You are in odooLocalPath/odoo folder) : 
+```
+python3 odoo-bin --addons-path=addons -d my_odoo_bdd_name
+```
+
+## Test Odoo
+Open a webbrowser at : http://localhost:8069
+
+### 1. Set up  admin password
+
+### 2. log into the Odoo database 
+	with the base administrator account: use admin as the email and, again, admin as the password.
+	http://localhost:8069/
+        	admin
+		admin
+### 3. Exit and test create database
+	Aïe :
+	 WARNING ? odoo.http: Logged into database 'zizi', but dbfilter rejects it; logging session out. 
+        => CTRL+C yo stop odoo instance
+   
+#### 3.1 Open odoo.conf file and add dbfilter
+```	nano odooLocalPath/odoo/odoo.conf 
+		[options]
+		dbfilter = .*
+```
+#### 3.2 Launch new instance and Refresh webbrowser
+```
+	python3 odoo-bin --addons-path=addons -d my_odoo_bdd_name -c odoo.conf
+```
+	Create db + connexion ok => gma_dev_2
+	=> CTRL+C yo stop odoo instance
+
+## Python virtual environnement
+
+### Python requirements
+
+To ignore python libraries errors, install dependancies below before run virtual environnement 
+```
+sudo apt-get install python3-dev libldap2-dev libsasl2-dev libssl-dev
+sudo apt install python3-ldap
+sudo apt-get install --reinstall libpq-dev
+```
+### Activate virtual environnement
+```
+	pi@raspberrypi:~/odooLocalPath $ python -m venv formation-env
+	pi@raspberrypi:~/odooLocalPath $ source formation-env/bin/activate
+	(formation-env) pi@raspberrypi:~/odooLocalPath $ python3 --version
+		Python 3.11.2
+        CTRL + C
+```
+
+### Launch odoo as developpement instance from python virtual environnement
+
+```
+pi@raspberrypi:~/odooLocalPath cd odoo
+pi@raspberrypi:~/odooLocalPath/odoo source ../formation-env/bin/activate
+pi@raspberrypi:~/odooLocalPath/odoo python3 odoo-bin -c odoo.conf -d my_odoo_bdd_name
+
+```
 
 # Visual Studio Code installation
 
@@ -117,6 +215,46 @@ sudo apt update
 sudo apt install libreoffice
 ```
 
+# Connecting modules under development to Odoo
+
+Create a folder outside your odooLocalPath : odoo_custom in odooCustomLocalPath.
+It's the only way to manage your code without inter off the official odoo repo
+```
+mkdir odooCustomLocalPath/odoo_custom
+```
+
+## Get your own sources :
+```
+cd odooCustomLocalPath/odoo_custom
+git clone https://github.com/your_repo/_source.git
+```
+
+## Configure odoo.conf with addons-path
+Be sure off the addon path locate in your odooLocalPath and ad it like this :
+Doing it this way will avoid errors like : "addons path location not find"
+```
+nano 
+        addons_path = odooLocalPath/odoo/addons, odooCustomLocalPath/odoo_custom
+```
+
+## Launch odoo as developpement instance from python virtual environnement with your own modules
+
+```
+pi@raspberrypi:~/odooLocalPath cd odoo
+pi@raspberrypi:~/odooLocalPath/odoo source ../formation-env/bin/activate
+pi@raspberrypi:~/odooLocalPath/odoo python3 odoo-bin -c odoo.conf -d my_odoo_bdd_name -u module_name
+
+```
+## From your webBrower, install your modules
+
+Be sure your developper mode is activate
+Be sure that apps dependancies are already activate
+Reload apps / modules
+Activate modules
+
+### Be carreful off Odoo Errors logs.
+Sometimes you have to add views step by step so as not to rush an odoo instance on which modules have never worked.
+Menu items in others app dependancies in my case.
 
 # Backup of jobs on Raspberry for persistence on another system or Raspberry
 
