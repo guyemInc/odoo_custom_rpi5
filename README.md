@@ -180,7 +180,15 @@ pi@raspberrypi:~/odooLocalPath/odoo source ../formation-env/bin/activate
 pi@raspberrypi:~/odooLocalPath/odoo python3 odoo-bin -c odoo.conf -d my_odoo_bdd_name
 
 ```
+I decided to add odoo.conf file to github repo. It have incidences on the activate commande.
 
+```
+pi@raspberrypi:~/odooLocalPath cd ..
+pi@raspberrypi:~/odooLocalPath mv odoo/odoo.conf  odooCustomLocalPath/odoo_custom
+pi@raspberrypi:~/odooLocalPath cd odoo
+pi@raspberrypi:~/odooLocalPath/odoo source ../formation-env/bin/activate
+pi@raspberrypi:~/odooLocalPath/odoo python3 odoo-bin -c ../odoo_custom/odoo.conf -d my_odoo_bdd_name
+```
 # Visual Studio Code installation
 
 See here to install : https://code.visualstudio.com/docs/setup/raspberry-pi
