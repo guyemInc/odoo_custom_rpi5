@@ -256,6 +256,28 @@ Activate modules
 Sometimes you have to add views step by step so as not to rush an odoo instance on which modules have never worked.
 Menu items in others app dependancies in my case.
 
+## Default home page view settings
+
+You can change de default view by choosing in the Applicaton Theme list.
+
+Be sure your developper mode is activate
+
+Go to Application / Theme Store, which redirect to https://apps.odoo.com/apps/themes/browse?series=&search=openworx
+- Select the correct Odoo version
+- Choose a free theme, like "MuK Backend Theme" and download.
+
+Source : https://www.odoo.com/fr_FR/forum/aide-1/upload-and-install-third-party-theme-in-odoo-148053
+1. Once you purchase any third-party module, you will receive a link to download the zip file of the module.
+2. Extract the file from your system after the download finishes.
+3. Copy and paste this folder inside your Odoo Add-Ons path.
+4. Now, open the Odoo and click on the Settings menu. Here, click on Activate the Developer Mode. You can also activate the developer mode by typing ‘debug’ after ‘web?’ in the URL as well.
+5. Now, open the Apps menu and click on the ‘Update Modules List’.
+6. In the search bar, remove all the filters and search for that module.
+7. You will be able to see the module in the search result. Click on the ‘Install’ button to install it.
+    
+Some themes can be usefull / expected for mobil apps.
+
+
 # Backup of jobs on Raspberry for persistence on another system or Raspberry
 
 See here if you have a USB SD card adapter: [https:// ](https://all3dp.com/2/back-up-raspberry-pi-sd-card/)
