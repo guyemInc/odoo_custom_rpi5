@@ -285,6 +285,17 @@ Source : https://www.odoo.com/fr_FR/forum/aide-1/upload-and-install-third-party-
     
 Some themes can be usefull / expected for mobil apps.
 
+## Add personal icon du new App
+
+Simply add icon renamed into yout new module : "static/description/icon.png"
+
+Adjust right access to this file
+```
+sudo chmod 755 odooCustomLocalPath/odoo_custom/essai/static/description/icon.png
+```
+
+In progress : see this icon / module in global home menu
+
 
 # Backup of jobs on Raspberry for persistence on another system or Raspberry
 
