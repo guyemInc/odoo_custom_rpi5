@@ -1,0 +1,294 @@
+
+17/08/2024 : Reprise en travaillant depuis les souces
+		Et ainsi voir si cette fois, les commandes mises dans mes notes fonctionnent
+		Et si cette fois, le repertoire odoo est bien rempli
+		Et si le requirement s'initialise
+
+		Car pour le reste, en principe, démarrer environnement virtuel et instance associée, c'est ok
+
+18/08/2024 : synthèses action du 17 et 18, car chargements pythons effectués pour fonctionnement ok :
+		- depuis source dans 		i@raspberrypi:~/Odoo/FORMATION/odoo $ python3 odoo-bin -c odoo.conf --addons-path=addons -d formation
+		- Depuis env virtuel dev	(formation-env) pi@raspberrypi:~/Odoo/FORMATION/odoo $ python3 odoo-bin -c odoo.conf --addons-path=addons -d formation
+
+		Cf détails dans  20240817_notes_install_from_source
+
+	https://www.odoo.com/documentation/17.0/administration/on_premise/source.html
+
+	cd Odoo/FORMATION
+	rm -rf odoo
+
+	# Stopper instance installée
+	sudo systemctl stop odoo.service
+
+	# C'est parti avec précision de la version. Car a date, c'est la v17.0
+	git clone -b 16.0 https://github.com/odoo/odoo.git
+
+	# Au passage, cela me gratte 10 Go... il en reste 11... soit 33% ca devrait aller
+
+	Filesystem      Size  Used Avail Use% Mounted on
+	Avt
+		Filesystem      Size  Used Avail Use% Mounted on
+		/dev/mmcblk0p2   29G  6.9G   21G  26% /
+	Après
+		/dev/mmcblk0p2   29G   17G   11G  63% /
+
+	# Controle des versions python installées
+	python3 --version
+		Python 3.11.2
+	pip3 --version
+		pip 23.0.1
+
+	# Installation de postgres
+	sudo apt install postgresql postgresql-client
+
+	# Ajout du user pi et controle fonctionnement psql
+		sudo -i -u postgres
+		postgres@raspberrypi:~$ createuser -d -R -S pi
+		postgres@raspberrypi:~$ createdb pi
+		postgres@raspberrypi:~$ exit
+		pi@raspberrypi:~/Odoo/FORMATION/odoo $ psql
+			psql (15.8 (Debian 15.8-0+deb12u1))
+			Type "help" for help.
+		\q
+
+	# Suite des actions effectuées :
+		##	On Debian/Ubuntu, the following commands should install the required packages:
+	cd odoo #CommunityPath	where clone was done
+	sudo ./setup/debinstall.sh
+
+	sudo apt-get -y install wkhtmltopdf
+
+	# Lancement de l'instance : 
+	python3 odoo-bin --addons-path=addons -d gma_dev_1
+
+	http://localhost:8069 in a web browser and log into the Odoo database 
+		with the base administrator account: use admin as the email and, again, admin as the password.
+		http://localhost:8069/
+		admin
+		admin
+
+	=> modifier user préférence dans application	: password : qd;in4965		(instead of admin)
+	=>						mail		guyem@mailo.com	(instead of admin)
+	=>	Done, la connexion à postgres est donc ok
+
+	# ok, mais pas le create db
+	# Créer alors le fichier  et étendre dbfilter
+	pi@raspberrypi:~/Odoo/FORMATION/odoo $ nano odoo.conf
+		[options]
+		admin_password = admin		
+		##		ip46-i4xb-h5eg
+		dbfilter = .*
+
+	# Re Lancement de l'instance : 
+	python3 odoo-bin --addons-path=addons -d gma_dev_1
+
+
+	Config postgresql pour version installée 
+	=> Voir autres fichiers de logs si soucis, car en l'état si Odoo tourne en local pas de raison d'y toucher
+	sudo cat /etc/postgresql/15/main/pg_hba.conf
+		# Database administrative login by Unix domain socket
+		local   all             postgres                                peer
+
+		# TYPE  DATABASE        USER            ADDRESS                 METHOD
+
+		# "local" is for Unix domain socket connections only
+		local   all             all                                     peer
+		# IPv4 local connections:
+		host    all             all             127.0.0.1/32            scram-sha-256
+		# IPv6 local connections:
+		host    all             all             ::1/128                 scram-sha-256
+		# Allow replication connections from localhost, by a user with the
+		# replication privilege.
+		local   replication     all                                     peer
+		host    replication     all             127.0.0.1/32            scram-sha-256
+		host    replication     all             ::1/128                 scram-sha-256
+
+	sudo systemctl restart postgresql@15-main
+
+	# Pour mémoire
+		cat odoo/odoo.conf
+		[options]
+			[options]
+			dbfilter = .*
+			####	admin_password = qd;in4965
+			#### odoo from source : bdd access throught http://localhost:8069/
+			####
+			##      gma_dev_1       admin   		admin		# Auto load odoo
+			##      gma_dev_2	guyem@mailo.com		qd;in4965	# Create from http://localhost:8069/
+
+	# Création d'un environnement virtuel pour développer
+	#	Explications ici : https://docs.python.org/fr/3.10/tutorial/venv.html
+	# Charger les dépendances python requises pour Odoo
+	pi@raspberrypi:~/Odoo/FORMATION $ cd odoo
+	pi@raspberrypi:~/Odoo/FORMATION $ pip3 freeze > odoo/requirements.txt
+
+	# Initialiser venv
+	pi@raspberrypi:~/Odoo/FORMATION $ python -m venv formation-env
+	pi@raspberrypi:~/Odoo/FORMATION $ source formation-env/bin/activate
+	(formation-env) pi@raspberrypi:~/Odoo/FORMATION $ python3 --version
+		Python 3.11.2
+
+	# Charger python
+	(formation-env) pi@raspberrypi:~/Odoo/FORMATION/odoo $ cd odoo
+	(formation-env) pi@raspberrypi:~/Odoo/FORMATION/odoo $ python3 -m pip install -r requirements.txt 
+
+	# Si au lancement depuis l'environnement virtuel
+	#	Exemple ici, erreur de chargement de librairies python... 
+					alors que ok si lancé depuis 	:	pi@raspberrypi:~/Odoo/FORMATION/odoo $
+
+	# Et bien aussi dans le fichier requirement
+		cat odoo/requirements.txt | grep PDF
+			PyPDF2==1.26.0 ; python_version <= '3.10'
+			PyPDF2==2.12.1 ; python_version > '3.10'
+
+	##
+	## Chargement complémentaire sur rpi... depuis un autre terminal, pour ne pas activer / désactiver sans arrêt le venv
+	##
+	## En me reportant a des forums, ici : https://www.codeease.net/programming/python/ERROR-Failed-building-wheel-for-python-ldap
+	## On conseille :
+	pi@raspberrypi:~/Odoo/FORMATION/odoo $ sudo apt-get install python3-dev libldap2-dev libsasl2-dev libssl-dev
+	pi@raspberrypi:~/Odoo/FORMATION/odoo $ sudo apt install python3-ldap
+			Preparing to unpack .../python3-ldap_3.4.3-2+b2_arm64.deb ...
+			Unpacking python3-ldap (3.4.3-2+b2) ...
+			Setting up python3-pyasn1 (0.4.8-3) ...
+			Setting up python3-pyasn1-modules (0.2.8-1) ...
+			Setting up python3-ldap (3.4.3-2+b2) ...
+
+	pi@raspberrypi:~/Odoo/FORMATION/odoo $ sudo apt-get install --reinstall libpq-dev
+		The following NEW packages will be installed:
+		  libpq-dev
+		Preparing to unpack .../libpq-dev_15.8-0+deb12u1_arm64.deb ...
+		Unpacking libpq-dev (15.8-0+deb12u1) ...
+		Setting up libpq-dev (15.8-0+deb12u1) ...
+		Processing triggers for man-db (2.11.2-2) ...
+
+	# Je retente
+	(formation-env) pi@raspberrypi:~/Odoo/FORMATION $ pip3 install -r odoo/requirements.txt
+	... plus d'erreurs
+
+	# Test import librairie	=> Yes done
+	(formation-env) pi@raspberrypi:~/Odoo/FORMATION $ python3
+		Python 3.11.2 (main, May  2 2024, 11:59:08) [GCC 12.2.0] on linux
+		Type "help", "copyright", "credits" or "license" for more information.
+		>>> import psycopg2
+
+
+	# Lancement Odoo
+	(formation-env) pi@raspberrypi:~/Odoo/FORMATION $ cd odoo
+	(formation-env) pi@raspberrypi:~/Odoo/FORMATION/odoo $ python3 odoo-bin -c odoo.conf --addons-path=addons -d formation
+
+	# Visu depuis localhot:8069 => Ok
+
+
+	
+	# Installation de VS Code
+	sudo apt install code
+
+	# et de différents plugins, directement depuis CODE
+		Extension	By		Description
+		GitHub.copilot	GitHub		
+		autoDocstring	Nils Werner	Visual Studio Code extension to quickly generate docstrings for python functions.
+
+		Odoo Snippets	Droggol		Snippets prefixes are defined in documentation. Type prefix and select snippet from the suggestion list.
+						For example if you want to add create CRUD method then type oocreate.
+
+		Pylance		Microsoft	Description : A performant, feature-rich language server for Python in VS Code
+
+		
+		Rainbow CSV	mechatroner	Highlight columns in comma (.csv), tab (.tsv), semicolon and pipe - separated files in different colors.
+
+		GitHub Pull Requests	v0.94.0	Review and manage your GitHub pull requests and issues directly in VS Code
+
+		Start git-bash		v1.2.1	Adds a bash command to VSCode that allows you to start git-bash in the current
+
+
+	# Récupération des sources du code 	https://github.com/guyemInc/odoo_custom
+	#				dans 	Odoo/FORMATION/odoo_custom
+	pi@raspberrypi:~/Odoo/FORMATION/ $ git config --global user.email "guyem@mailo.com"
+	pi@raspberrypi:~/Odoo/FORMATION/ $ git config --global user.name "Guyem"
+	pi@raspberrypi:~/Odoo/FORMATION/ $ git clone https://github.com/guyemInc/odoo_custom.git
+	pi@raspberrypi:~/Odoo/FORMATION/ $ ls -l odoo_custom
+					immeuble, essai
+
+	# Cablage au git via VS CODE
+		Ouverture du répertoire depuis VS Code
+	
+		Do you trust the authors of the files in this folder?
+		=> Yes
+
+	# Depuis VS Code, je vois bien les fichiers source développés en février - avril 2024
+	#		Et je peux bien lancer les instances depuis le Terminal intégré
+
+		pi@raspberrypi:~/Odoo/FORMATION $ source formation-env/bin/activate
+		(formation-env) pi@raspberrypi:~/Odoo/FORMATION/odoo $ cd ../odoo_custom/
+		(formation-env) pi@raspberrypi:~/Odoo/FORMATION/odoo_custom $ git commit -m "UPPDATE 0 from rpi5"
+			On branch main
+			Your branch is up to date with 'origin/main'.
+			nothing to commit, working tree clean
+		(formation-env) pi@raspberrypi:~/Odoo/FORMATION/odoo_custom $ cd ../odoo
+		(formation-env) pi@raspberrypi:~/Odoo/FORMATION/odoo $ python3 odoo-bin -c odoo.conf --addons-path=addons -d formation
+
+	# Instructions et paramétrage pour https nginx non suivi, car reste en local
+
+
+	##
+	## Paramétrage pour affichage des modules développés
+	##
+	Adaptation (Car création début 2024) des fichiers init et manifest ... surtout pour ne pas tout charger d'un coup
+
+
+	## Ajuster le config pour pointer vers ces modules. !! C'est bien le répertoire parent, pas celui de chaque module
+	nano odoo.conf
+		addons_path = /home/pi/Odoo/FORMATION/odoo/addons, /home/pi/Odoo/FORMATION/odoo_custom
+ 
+	## Lancement du module "essai" uniquement pour voir ce que cela donne... à mon avis, il va falloir y aller pas à pas... mais bon je teste quand même
+		(formation-env) pi@raspberrypi:~/Odoo/FORMATION/odoo $ python3 odoo-bin -c odoo.conf --addons-path=addons -d formation -u essai
+		# Aîe... bon, va falloir y aller à taton
+		2024-08-18 14:32:23,658 6117 WARNING formation odoo.modules.loading: invalid module names, ignored: essai
+
+	## Activation de différents modules dans Odoo afin de les avoirs sous la main
+		Projet
+		Contacts
+
+		=> car les modules déjà dev sont en quelque sorte des extensions de ces modules
+
+		=> Depuis VS Code, effacement du contenu des répertoires : 
+			essai/__pycache__
+			essai/models/__pycache__
+
+	##
+	## Pourtant le addons_path est ok
+		pi@raspberrypi:~/Odoo/FORMATION $ cat odoo/odoo.conf
+			[options]
+			dbfilter = .*
+			addons_path = /home/pi/Odoo/FORMATION/odoo/addons, /home/pi/Odoo/FORMATION/odoo_custom
+
+		pi@raspberrypi:~/Odoo/FORMATION $ ls -l /home/pi/Odoo/FORMATION/odoo_custom/
+				total 24
+				drwxr-xr-x 2 pi pi 4096 Aug 18 16:09 database_saved
+				drwxr-xr-x 6 pi pi 4096 Aug 18 16:09 essai
+				drwxr-xr-x 6 pi pi 4096 Aug 18 17:19 essai_step_0
+
+	## C'est pareil pour :	essai
+	#			essai_step_0
+	#			immeuble
+	#		python3 odoo-bin -c odoo.conf --addons-path=addons -d formation -u immeuble
+	#		2024-08-18 15:31:18,222 9825 WARNING formation odoo.modules.loading: invalid module names, ignored: immeuble
+
+	# C'est vrai aussi en dehors de l'environnement : python3 odoo-bin -c odoo.conf --addons-path=addons -d formation -u immeuble
+
+
+
+	##
+	## A démarrage
+	#"
+	   source formation-env/bin/activate
+	   cd odoo
+	   python3 odoo-bin -c odoo.conf --addons-path=addons -d formation -u essai
+	   deactivate
+	   cd ..
+
+
+	## Pensez aussi a tester sur Firefox...
+		Et si ok, ajouter extension debug
+	

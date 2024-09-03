@@ -1,0 +1,417 @@
+df -h | grep "Avail\|dev/"
+	Filesystem      Size  Used Avail Use% Mounted on
+	/dev/mmcblk0p2   29G  4.9G   23G  18% /
+	tmpfs           4.0G   24M  4.0G   1% /dev/shm
+	/dev/mmcblk0p1  510M   75M  436M  15% /boot/firmware
+
+sudo apt install postgresql -y
+
+# Installation de pg15  => 1Go consommé
+
+df -h | grep "Avail\|dev/"
+	Filesystem      Size  Used Avail Use% Mounted on
+	/dev/mmcblk0p2   29G  5.1G   23G  19% /
+	tmpfs           4.0G   21M  4.0G   1% /dev/shm
+	/dev/mmcblk0p1  510M   75M  436M  15% /boot/firmware
+
+# Installation de Odoo	=> 1Go consommé
+
+df -h | grep "Avail\|dev/"
+	Filesystem      Size  Used Avail Use% Mounted on
+	/dev/mmcblk0p2   29G  6.2G   22G  23% /
+	tmpfs           4.0G  1.4M  4.0G   1% /dev/shm
+	/dev/mmcblk0p1  510M   75M  436M  15% /boot/firmware
+
+	Url accessible : http://localhost:8069/web/database/selector
+
+# Installation VS Code
+	Filesystem      Size  Used Avail Use% Mounted on
+	/dev/mmcblk0p2   29G  5.1G   23G  19% /
+
+	/dev/mmcblk0p2   29G  6.6G   21G  25% /
+
+
+Already installed
+
+pi@raspberrypi:~ $ python3 --version
+Python 3.11.2
+pi@raspberrypi:~ $ pip3 --version
+pip 23.0.1 from /usr/lib/python3/dist-packages/pip (python 3.11)
+pi@raspberrypi:~ $ git --version
+git version 2.39.2
+
+
+sudo apt-get install wkhtmltopdf	=> 1.5 Go de plus... reste 21 / 32 Go
+
+df -h | grep "Avail\|dev/"
+	Filesystem      Size  Used Avail Use% Mounted on
+	/dev/mmcblk0p2   29G  6.9G   21G  26% /
+
+
+##
+## Tentative de récuperation de la bdd formation
+##
+##	Soucis lors du restore : cf : https://github.com/odoo/odoo/issues/63802
+##				nok à date : 15/08/2024
+   sudo cat /etc/postgresql/15/main/pg_hba.conf
+   sudo nano /etc/postgresql/15/main/pg_hba.conf
+   sudo systemctl restart postgresql@15-main
+   sudo cat /etc/postgresql/15/main/pg_hba.conf
+   pi@raspberrypi:~ $ sudo tail -f -n 20 /etc/postgresql/15/main/pg_hba.conf
+	# maintenance (custom daily cronjobs, replication, and similar tasks).
+	#
+	# Database administrative login by Unix domain socket
+	local   all             postgres                                peer
+
+	# TYPE  DATABASE        USER            ADDRESS                 METHOD
+
+	# "local" is for Unix domain socket connections only
+	local   all             all                                     peer
+	# IPv4 local connections:
+	#host    all             all             127.0.0.1/32            scram-sha-256
+	host    all             all             127.0.0.0/0            scram-sha-256
+	host    all             all             all                     trust
+	# IPv6 local connections:
+	host    all             all             ::1/128                 scram-sha-256
+	# Allow replication connections from localhost, by a user with the
+	# replication privilege.
+	local   replication     all                                     peer
+	host    replication     all             127.0.0.1/32            scram-sha-256
+	host    replication     all             ::1/128                 scram-sha-256
+
+
+##
+## Tentative de création d'un environnement custom FORMATION
+##
+	pi@raspberrypi:~/FORMATION $ cd /etc/odoo
+	pi@raspberrypi:/etc/odoo $ sudo mkdir custom_addons
+	pi@raspberrypi:/etc/odoo $ cd
+	pi@raspberrypi:~ $ sudo mkdir Development
+	pi@raspberrypi:~ $ cd Development/
+	pi@raspberrypi:~/Development $ sudo git clone https://github.com/OpenEMS/odoo-openems.git
+		Cloning into 'odoo-openems'...
+		remote: Enumerating objects: 450, done.
+		remote: Counting objects: 100% (25/25), done.
+		remote: Compressing objects: 100% (15/15), done.
+		remote: Total 450 (delta 16), reused 10 (delta 10), pack-reused 425 (from 1)
+		Receiving objects: 100% (450/450), 291.03 KiB | 3.27 MiB/s, done.
+		Resolving deltas: 100% (248/248), done.
+	pi@raspberrypi:~/Development $ cd odoo-openems
+	pi@raspberrypi:~/Development/odoo-openems $ sudo cp -r openems/ /etc/odoo/custom_addons/
+	pi@raspberrypi:~/Development/odoo-openems $ sudo nano /etc/odoo/odoo.conf
+	pi@raspberrypi:~/Development/odoo-openems $ sudo systemctl restart odoo.service
+	pi@raspberrypi:~/Development/odoo-openems $ cd /etc/odoo
+
+	pi@raspberrypi:/etc/odoo $ sudo mkdir custom_addons/FORMATION
+	pi@raspberrypi:/etc/odoo $ cd custom_addons/FORMATION
+	pi@raspberrypi:/etc/odoo/custom_addons/FORMATION $ source venv/bin/activate
+		bash: venv/bin/activate: No such file or directory
+	pi@raspberrypi:/etc/odoo/custom_addons/FORMATION $ python3 odoo-bin --addons-path=addons -d formation
+		python3: can't open file '/etc/odoo/custom_addons/FORMATION/odoo-bin': [Errno 2] No such file or directory
+	pi@raspberrypi:/etc/odoo/custom_addons/FORMATION $ python3
+		Python 3.11.2 (main, May  2 2024, 11:59:08) [GCC 12.2.0] on linux
+		Type "help", "copyright", "credits" or "license" for more information.
+		>>> exit()
+	pi@raspberrypi:/etc/odoo/custom_addons/FORMATION $ ./odoo-bin --addons-path=addons -d formation
+		bash: ./odoo-bin: No such file or directory
+
+ # Memes essais depuis home
+	pi@raspberrypi:/etc/odoo/custom_addons/FORMATION $ cd /home/pi/FORMATION/
+	pi@raspberrypi:~/FORMATION $ ./odoo-bin --addons-path=addons -d formation
+		bash: ./odoo-bin: No such file or directory
+	pi@raspberrypi:~/FORMATION $ python3 odoo-bin --addons-path=addons -d formation
+		python3: can't open file '/home/pi/FORMATION/odoo-bin': [Errno 2] No such file or directory
+
+# Installation / controle présence de dépendances
+
+	pi@raspberrypi:~/FORMATION $ sudo apt install python3-xlwt
+		Reading package lists... Done
+		Building dependency tree... Done
+		Reading state information... Done
+		python3-xlwt is already the newest version (1.3.0-4).
+		python3-xlwt set to manually installed.
+		0 upgraded, 0 newly installed, 0 to remove and 0 not upgraded.
+	pi@raspberrypi:~/FORMATION $ sudo apt install python3-num2words
+		Reading package lists... Done
+		Building dependency tree... Done
+		Reading state information... Done
+		python3-num2words is already the newest version (0.5.10-2).
+		python3-num2words set to manually installed.
+		0 upgraded, 0 newly installed, 0 to remove and 0 not upgraded.
+
+
+?? Voir la suite :
+		https://www.odoo.com/fr_FR/forum/aide-1/odoo-bin-not-exist-within-my-folder-odoo-113709
+
+		https://odoo-documentation.oeerp.com/developer/howtos/rdtraining/02_setup.html
+
+
+# Pour accéder au psql sans "sudo -i -u postgres", ajouter user et bdd au nom d'utilisateur
+sudo -i -u postgres
+createuser pi
+createdb pi
+exit
+# Exemple usage :
+	pi@raspberrypi:~ $ psql
+		psql (15.8 (Debian 15.8-0+deb12u1))
+		Type "help" for help.
+	pi=> \c formation
+	You are now connected to database "formation" as user "pi".
+
+# Reprise de ce guide :	https://tecadmin.net/how-to-install-odoo-16-on-ubuntu-22-04/
+sudo adduser --system --group --home=/opt/odoo --shell=/bin/bash odoo
+	The system user `odoo' already exists. Exiting.
+sudo su - postgres -c "createuser -s odoo" 
+	createuser: error: creation of new role failed: ERROR:  role "odoo" already exists
+
+# La suite semblait bien partie, mais :
+	- répertoire FORMATION/odoo reste vide
+	- install requirement echoue
+
+
+	pi@raspberrypi:~ $ cd FORMATION/
+	pi@raspberrypi:~/FORMATION $ python3 -m venv venv
+	pi@raspberrypi:~/FORMATION $ ls -l
+	total 4
+	drwxr-xr-x 5 pi pi 4096 Aug 16 09:57 venv
+	pi@raspberrypi:~/FORMATION $ ls -l venv/
+	total 16
+	drwxr-xr-x 2 pi pi 4096 Aug 16 09:57 bin
+	drwxr-xr-x 3 pi pi 4096 Aug 16 09:57 include
+	drwxr-xr-x 3 pi pi 4096 Aug 16 09:57 lib
+	lrwxrwxrwx 1 pi pi    3 Aug 16 09:57 lib64 -> lib
+	-rw-r--r-- 1 pi pi  162 Aug 16 09:57 pyvenv.cfg
+
+# Ci-dessus est conforme à ce qu' il y a sur VM Ubuntu
+
+	pi@raspberrypi:~/FORMATION $ source venv/bin/activate
+	(venv) pi@raspberrypi:~/FORMATION $ python3 odoo-bin -addons-path=addons -d formation
+
+?	python3: can't open file '/home/pi/FORMATION/odoo-bin': [Errno 2] No such file or directory
+? Avait le meme soucis sur VM Ubuntu, mais n'ai pas la solution dans mes notes
+
+	(venv) pi@raspberrypi:~/FORMATION $ pip3 install wheel
+	Looking in indexes: https://pypi.org/simple, https://www.piwheels.org/simple
+	Collecting wheel
+	  Downloading https://www.piwheels.org/simple/wheel/wheel-0.44.0-py3-none-any.whl (67 kB)
+	     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 67.1/67.1 kB 610.8 kB/s eta 0:00:00
+	Installing collected packages: wheel
+	Successfully installed wheel-0.44.0
+	(venv) pi@raspberrypi:~/FORMATION $ pip3 install -r requirements.txt
+	ERROR: Could not open requirements file: [Errno 2] No such file or directory: 'requirements.txt'
+	(venv) pi@raspberrypi:~/FORMATION $ mkdir odoo
+	(venv) pi@raspberrypi:~/FORMATION $ touch odoo/requirements.txt
+	(venv) pi@raspberrypi:~/FORMATION $ pip3 install -r requirements.txt
+
+
+Here is quick overview of folders created from Odoo install:
+
+	/etc/odoo/              # Configuration files
+	/usr/bin/odoo           # Odoo executables
+	/usr/lib/python3/dist-packages/odoo  # Python packages  
+	/var/log/odoo           # Log files  
+	/var/lib/odoo           # Data files
+
+	sudo tail -f /var/log/odoo/odoo-server.log
+
+
+Reprise installations bdd pour que le odoo bin fonctionner
+	pi@raspberrypi:~ $ sudo -i -u postgres
+	postgres@raspberrypi:~$ psql
+		psql (15.8 (Debian 15.8-0+deb12u1))
+		Type "help" for help.
+	postgres=# create database pi;
+		CREATE DATABASE
+	postgres=# \c pi
+		You are now connected to database "pi" as user "postgres".
+	pi=# GRANT pg_write_all_data TO pi;
+		NOTICE:  role "pi" is already a member of role "pg_write_all_data"
+	pi=# \l
+		                                         List of databases
+	   Name    |  Owner   | Encoding |   Collate   |    Ctype    | ICU Locale | Locale Provider |   Access privileges   
+	-----------+----------+----------+-------------+-------------+------------+-----------------+-----------------------
+	 pi        | postgres | UTF8     | en_GB.UTF-8 | en_GB.UTF-8 |            | libc            | 
+	 postgres  | postgres | UTF8     | en_GB.UTF-8 | en_GB.UTF-8 |            | libc            | 
+	 template0 | postgres | UTF8     | en_GB.UTF-8 | en_GB.UTF-8 |            | libc            | =c/postgres          +
+		   |          |          |             |             |            |                 | postgres=CTc/postgres
+	 template1 | postgres | UTF8     | en_GB.UTF-8 | en_GB.UTF-8 |            | libc            | =c/postgres          +
+		   |          |          |             |             |            |                 | postgres=CTc/postgres
+	 test      | odoo     | UTF8     | C           | en_GB.UTF-8 |            | libc            | 
+	(5 rows)
+
+	postgres=# ALTER DATABASE pi OWNER TO pi;
+	ALTER DATABASE
+	postgres=# GRANT postgres TO pi;
+	GRANT ROLE
+	postgres=# GRANT odoo TO pi;
+
+	\q
+	exit
+
+# 16/08/2024 : Démarrer / arrêter odoo :
+		
+		sudo systemctl restart odoo.service				=> bdd test, owner odoo
+		sudo systemctl start odoo.service	
+		sudo systemctl stop odoo.service	
+	Ou
+		pi@raspberrypi:~/Odoo/FORMATION $ /usr/bin/odoo -d pi -i base	=> bdd pi, owner pi
+		CTRL+C to stop
+
+
+		Database creation error: permission denied to create database
+	Or in logs :
+		psycopg2.errors.InsufficientPrivilege: permission denied to create database
+
+	A(venv) pi@raspberrypi:~/Odoo/FORMATION $ sudo -i -u postgres
+		postgres@raspberrypi:~$ psql
+		psql (15.8 (Debian 15.8-0+deb12u1))
+		Type "help" for help.
+
+		postgres=# ALTER USER odoo WITH CREATEDB;
+
+		ALTER ROLE
+		postgres=# ALTER USER pi WITH CREATEDB;
+		ALTER ROLE
+	Cela ne change rien... tjrs erreur en créant bdd
+	Alors que si on visionne via \du
+		postgres=# \du
+				                               List of roles
+		 Role name |                         Attributes                         |             Member of             
+		-----------+------------------------------------------------------------+-----------------------------------
+		 formation | Create DB                                                  | {}
+		 gmalinge  | Create DB                                                  | {}
+	      ?? odoo      | Create DB                                                  | {postgres}
+		 pi        | Create DB                                                  | {postgres,pg_write_all_data,odoo}
+		 postgres  | Superuser, Create role, Create DB, Replication, Bypass RLS | {pg_write_all_data}
+		 toto      | Create DB                                                  | {}
+
+	Test
+		postgres=# ALTER USER odoo WITH Superuser;
+
+		sudo systemctl restart odoo.service
+
+	Create DB test1 ok pour le coup.
+
+	Stopper instance odoo
+		sudo systemctl stop odoo.service
+	Repasser  à l'environnement de DEV
+	Affecter droits superuser à pi	
+		postgres=# ALTER USER pi WITH Superuser;
+		\q
+		exit
+	Relance de odoo dans environnement virtuel
+		(venv) pi@raspberrypi:~/Odoo/FORMATION $ /usr/bin/odoo -d pi -i base
+	Créer bdd formation
+		http://localhost:8069/web/database/selector
+
+	.... bon, bof, pourtant depuis psql semble ok
+		postgres=# GRANT pg_write_all_data TO odoo;
+		
+		postgres=# \du
+				                               List of roles
+		 Role name |                         Attributes                         |             Member of             
+		-----------+------------------------------------------------------------+-----------------------------------
+		 formation | Create DB                                                  | {}
+		 gmalinge  | Create DB                                                  | {}
+		 odoo      | Superuser, Create DB                                       | {postgres,pg_write_all_data}
+		 pi        | Superuser, Create DB                                       | {postgres,pg_write_all_data,odoo}
+		 postgres  | Superuser, Create role, Create DB, Replication, Bypass RLS | {pg_write_all_data}
+		 toto      | Create DB                                                  | {}
+
+	Je passe les détails, mais en ayant comme message dans les logs
+		 "odoo.http: Logged into database" " logging session out."
+
+	Cf https://github.com/odoo/odoo/issues/15102
+		Odoo 10 Community Installation issue : logging session out #15102	
+
+	J'ajoute au fichier de config
+		dbfilter = .*
+
+	 Ainsi, 
+		pi@raspberrypi:~/Odoo/FORMATION $ cat odoo.conf
+			[options]
+			admin_password = ip46-i4xb-h5eg
+			dbfilter = .*
+	Relance de odoo dans environnement virtuel
+		(venv) pi@raspberrypi:~/Odoo/FORMATION $ /usr/bin/odoo -d pi -i base
+	Créer bdd formation
+		http://localhost:8069/web/database/selector
+
+	Voilà, c'est ok ok OK OK OK !!!!
+	Voilà, c'est ok ok OK OK OK !!!!
+	Voilà, c'est ok ok OK OK OK !!!!
+
+En tout cas, lorsque VS Code sera en place, le processus de lancement est bien
+	cd Odoo/FORMATION
+	python3 -m venv venv
+	source venv/bin/activate
+	/usr/bin/odoo -d pi -i base	... c'est en tout cas ce que l'on voit comme histo dans command line VS Code de VM Ubuntu
+					... et ici sur Rpi, au moins, cela lance bien odoo ...
+					... si en amont on stoppe l'instance principale : 
+						sudo systemctl stop odoo.service
+		
+Ajout de la connexion au git
+	pi@raspberrypi:~/Odoo/FORMATION $ cd custom/
+	pi@raspberrypi:~/Odoo/FORMATION/custom $ git config --global user.email "guyem@mailo.com"
+	pi@raspberrypi:~/Odoo/FORMATION/custom $ git config --global user.name "Guyem"
+	pi@raspberrypi:~/Odoo/FORMATION/custom $ ssh-keygen -t ed25519 -C guyem@mailo.com
+	Generating public/private ed25519 key pair.
+	Enter file in which to save the key (/home/pi/.ssh/id_ed25519): 
+	Created directory '/home/pi/.ssh'.
+	Enter passphrase (empty for no passphrase): 
+	Enter same passphrase again: 
+	Your identification has been saved in /home/pi/.ssh/id_ed25519
+	Your public key has been saved in /home/pi/.ssh/id_ed25519.pub
+	The key fingerprint is:
+	SHA256:V6ojYPNdTNTAMO+/ko0Shau7iibEWbdrFfKp0Ssm5Tk guyem@mailo.com
+	The key's randomart image is:
+	+--[ED25519 256]--+
+	|        oooo     |
+	|         +. .    |
+	|         .o .    |
+	|   . o ..+.o     |
+	|. o = = So*      |
+	| + . B *o+ .     |
+	|.   o O.=. +.    |
+	|. .o E.o..+ ..   |
+	| o. =.=o . ..    |
+	+----[SHA256]-----+
+	pi@raspberrypi:~/Odoo/FORMATION/custom $ ls -al ~/.ssh
+	total 16
+	drwx------  2 pi pi 4096 Aug 16 22:32 .
+	drwx------ 19 pi pi 4096 Aug 16 22:32 ..
+	-rw-------  1 pi pi  411 Aug 16 22:32 id_ed25519
+	-rw-r--r--  1 pi pi   97 Aug 16 22:32 id_ed25519.pub
+	pi@raspberrypi:~/Odoo/FORMATION/custom $ ssh-add ~/.ssh/id_ed25519
+	Identity added: /home/pi/.ssh/id_ed25519 (guyem@mailo.com)
+	pi@raspberrypi:~/Odoo/FORMATION/custom $ cat ~/.ssh/id_ed25519.pub
+	ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHCkGcpcFw1IOcJaPj84ORDGZrwe1b9uAhCu4s8kTpXP guyem@mailo.com
+
+	bon ne semble pas lui plaire, je passe outre et git clone https
+
+	   git clone https://github.com/guyemInc/odoo_custom.git
+	   ls -l
+	   ls -l custom/
+	   ls -l odoo_custom/
+	   cat odoo_custom/README.md 
+
+Définition du chemin des addons dans le odoo.conf
+	nano odoo.conf
+		[options]
+		admin_password = ip46-i4xb-h5eg
+		dbfilter = .*
+		addons_path = /home/pi/Odoo/FORMATION/odoo_custom
+
+Et lancement avec les noms de modules
+	pi@raspberrypi:~/Odoo/FORMATION $ /usr/bin/odoo -d formation -i base -u immeuble,infrastucture,essai
+
+	... bon forcément, ca va pas tout seul
+	2024-08-16 20:48:22,289 2946 WARNING formation odoo.modules.loading: invalid module names, ignored: immeuble, infrastucture, essai
+	... on va les passer un par un, la bdd étant vide en plus, il faut y aller molo
+
+
+Interactions depuis VS Code
+		
+
+
+

@@ -1,0 +1,10 @@
+##
+### Tentative creation d'un module, depuis l'environnement virtuel
+##
+
+(formation-env) pi@raspberrypi:~/Odoo/FORMATION/odoo $ python3 odoo-bin scaffold test_app_new odoo_custom
+(formation-env) pi@raspberrypi:~/Odoo/FORMATION/odoo $ ls -l odoo_custom/
+		total 12
+		drwxr-xr-x 7 pi pi 4096 Aug 21 19:42 essai
+		drwxr-xr-x 7 pi pi 4096 Aug 24 18:42 test_app_new
+		drwxr-xr-x 7 pi pi 4096 Aug 20 22:31 tototata

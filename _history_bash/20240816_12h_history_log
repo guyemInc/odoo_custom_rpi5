@@ -1,0 +1,222 @@
+    1  echo dqte
+    2  echo date
+    3  sudo apt update -y && sudo apt upgrade -y
+    4  df -h
+    5  sudo apt install postgresql -y
+    6  df -h | grep "Avail\|dev/"
+    7  sudo -i -u postgres
+    8  wget -O - https://nightly.odoo.com/odoo.key | sudo gpg --dearmor -o /usr/share/keyrings/odoo-archive-keyring.gpg
+    9  echo 'deb [signed-by=/usr/share/keyrings/odoo-archive-keyring.gpg] https://nightly.odoo.com/16.0/nightly/deb/ ./' | sudo tee /etc/apt/sources.list.d/odoo.list
+   10  sudo apt update -y
+   11  sudo apt install odoo -y
+   12  df -h | grep "Avail\|dev/"
+   13  history
+   14  df -h | grep "Avail\|dev/"
+   15  sudo apt install code
+   16  df -h | grep "Avail\|dev/"
+   17  python -- version
+   18  sudo apt install git
+   19  sudo apt install python
+   20  sudo apt install python3
+   21  python3 -- version
+   22  sudo python3 -- version
+   23  python3
+   24  python3 --version
+   25  pip3 --version
+   26  git --version
+   27  mkdir FORMATION
+   28  sudo apt-get install wkhtmltopdf
+   29  df -h | grep "Avail\|dev/"
+   30  sudo ls -l /var/lib/pgsql/
+   31  sudo ls -l /var/lib/
+   32  sudo ls -l /var/lib/postgresql
+   33  sudo ls -l /var/lib/postgresql/15
+   34  sudo ls -l /var/lib/postgresql/15/main
+   35  sudo cat /var/lib/postgresql/15/main/postgresql.auto.conf
+   36  cat /var/lib/postgresql/15/main/postgresql.auto.conf
+   37  sudo head /var/lib/postgresql/15/main/postgresql.auto.conf
+   38  sudo -i -u postgres
+   39  sudo ls -l /etc/postgresql/15/main
+   40  sudo cat /etc/postgresql/15/main/pg_hba.conf
+   41  sudo nano /etc/postgresql/15/main/pg_hba.conf
+   42  sudo systemctl restart postgresql@15-main
+   43  sudo cat /etc/postgresql/15/main/pg_hba.conf
+   44  sudo nano /etc/postgresql/15/main/pg_hba.conf
+   45  sudo systemctl restart postgresql@15-main
+   46  sudo cat /etc/postgresql/15/main/pg_hba.conf
+   47  history
+   48  sudo tail -f -n 20 /etc/postgresql/15/main/pg_hba.conf
+   49  exit
+   50  ls -l
+   51  ls -l history | grep postgresql
+   52  ls -l history | grep postgre
+   53  sudo apt install postgresql postgresql-client -y
+   54  sudo -u postgres createuser -d -R -S gmalinge
+   55  sudo -i -u postgres
+   56  ls -l
+   57  cd FORMATION/
+   58  python3 odoo-bin --addons-path=addons -d formation
+   59  ls -l /etc/odoo
+   60  cd /etc/odoo
+   61  mkdir custom_addons
+   62  sudo mkdir custom_addons
+   63  cd
+   64  sudo mkdir Development
+   65  cd Development/
+   66  git clone https://github.com/OpenEMS/odoo-openems.git
+   67  sudo git clone https://github.com/OpenEMS/odoo-openems.git
+   68  cd odoo-openems
+   69  sudo cp -r openems/ /etc/odoo/custom_addons/
+   70  sudo nano /etc/odoo/odoo.conf
+   71  sudo systemctl restart odoo.service
+   72  cd /etc/odoo
+   73  sudo mkdir FORMATION
+   74  cd FORMATION/
+   75  python3 odoo-bin --addons-path=addons -d formation
+   76  cd ..
+   77  python3 odoo-bin --addons-path=addons -d formation
+   78  ls -l
+   79  ls -l custom_addons/
+   80  mv FORMATION/ custom_addons/
+   81  sudo mv FORMATION/ custom_addons/
+   82  cd custom_addons/FORMATION/
+   83  source venv/bin/activate
+   84  python3 odoo-bin --addons-path=addons -d formation
+   85  python3
+   86  ./odoo-bin --addons-path=addons -d formation
+   87  cd /home/pi/FORMATION/
+   88  ./odoo-bin --addons-path=addons -d formation
+   89  python3 odoo-bin --addons-path=addons -d formation
+   90  sudo pip3 install xlwt
+   91  sudo apt install python3-xyz
+   92  sudo apt install python3-xlwt
+   93  sudo apt install python3-num2words
+   94  cd /CommunityPath
+   95  exit
+   96  psql
+   97  sudo -i -u postgres
+   98  psql
+   99  sudo -i -u postgres
+  100  psql
+  101  sudo adduser --system --group --home=/opt/odoo --shell=/bin/bash odoo
+  102  sudo su - postgres -c "createuser -s odoo" 
+  103  history | grep odoo
+  104  sudo ls -l /opt/odoo/
+  105  sudo ls -l /etc/odoo/
+  106  cd FORMATION/
+  107  python3 -m venv venv
+  108  ls -l
+  109  ls -l venv/
+  110  source venv/bin/activate
+  111  python3 odoo-bin -addons-path=addons -d formation
+  112  pip3 install wheel
+  113  pip3 install -r requirements.txt
+  114  mkdir odoo
+  115  touch odoo/requirements.txt
+  116  pip3 install -r requirements.txt
+  117  pip3 install -r odoo/requirements.txt
+  118  cat odoo/requirements.txt
+  119  cd odoo/
+  120  pip3 freeze > requirements.txt
+  121  pip3 install -r requirements.txt
+  122  cat requirements.txt 
+  123  ./odoo/bin -d formation -c odoo.conf
+  124  ./odoo/odoo/bin -d formation -c odoo.conf
+  125  ps -fu | grep odoo
+  126  ./odoo/odoo-bin -d formation -c odoo.conf
+  127  ./odoo-bin -d formation -c odoo.conf
+  128  ls -l /etc/odoo
+  129  sudo systemctl status odoo
+  130*  /etc/odoo/custom_addons/
+  131  source venv/bin/deactivate
+  132  deactivate
+  133  cd ..
+  134  ./odoo/bin -d formation -c odoo.conf
+  135  ./odoo-bin -d formation -c odoo.conf
+  136  ls -l /etc/odoo
+  137  ls -l /etc/odoo/custom_addons/
+  138  sudo rm -R /etc/odoo/custom_addons/openems
+  139  ls -l /etc/odoo/custom_addons/FORMATION/
+  140  sudo rm -R /etc/odoo/custom_addons/FORMATION
+  141  nano /etc/odoo/odoo.conf 
+  142  sudo nano /etc/odoo/odoo.conf 
+  143  cd ..
+  144  mkdir odoo
+  145  mv FORMATION/  odoo/
+  146  sudo systemctl restart odoo
+  147  ls -l odoo/FORMATION/
+  148  ls -l odoo/FORMATION/odoo/
+  149  ls -l /usr/bin/odoo
+  150  sudo ls -l /usr/bin/odoo
+  151  sudo ls -l /var/lib/odoo
+  152  sudo ls -l /var/log/odoo
+  153  sudo tail -f /var/log/odoo/odoo-server.log
+  154  ls -l odoo/FORMATION/
+  155  rm odoo/FORMATION/*
+  156  sudo rm -rf odoo/FORMATION/*
+  157  cd odoo/FORMATION
+  158  python3 -m venv venv
+  159  ls -l
+  160  source venv/bin/activate
+  161  python3 odoo-bin -addons-path=addons -d formation
+  162  python3 /usr/bin/odoo/odoo-bin -addons-path=addons -d formation
+  163  python3 /usr/bin/odoo -addons-path=addons -d formation
+  164  python3 ./odoo-bin -addons-path=addons -d formation
+  165  deactivate
+  166  cd ..
+  167  sudo rm -rf FORMATION/*
+  168  sudo FORMATION /etc/odoo/custom_addons/
+  169  sudo mv FORMATION /etc/odoo/custom_addons/
+  170  sudo nano /etc/odoo/odoo.conf
+  171  sudo systemctl restart odoo
+  172  cd /etc/odoo/custom_addons/FORMATION/
+  173  ls -l
+  174  python3 -m venv venv
+  175  python3 odoo-bin -addons-path=addons -d formation
+  176  python3 ./odoo-bin -addons-path=addons -d formation
+  177  sudo -u odoo
+  178  su odoo
+  179  history | grep clone
+  180  cd..
+  181  cd ..
+  182  cd FORMATION/
+  183  cd ..
+  184  sudo mkdir Development
+  185  cd Development/
+  186  git clone https://github.com/OpenEMS/odoo-openems.git
+  187  sudo git clone https://github.com/OpenEMS/odoo-openems.git
+  188  cd odoo-openems/
+  189  ls -l
+  190  ls -l openems/
+  191  sudo cp -r openems/ /etc/odoo/custom_addons/
+  192  sudo nano /etc/odoo/odoo.conf
+  193  sudo systemctl restart odoo
+  194  sudo systemctl restart odoo.service
+  195  ls -l /etc/odoo/custom_addons/
+  196  sudo nano /etc/odoo/odoo.conf
+  197  sudo systemctl restart odoo.service
+  198  ls -l /etc/odoo/custom_addons/openems/
+  199  cd /etc/odoo
+  200  ls -l
+  201  ls -l /usr/bin/odoo
+  202  cd /home/pi
+  203  ls -l
+  204  cd /home/pi/odoo/
+  205  cd ..
+  206  mv odoo/ Odoo
+  207  mkdir Odoo/FORMATION
+  208  mkdir Odoo/FORMATION/custom
+  209  cd Odoo/FORMATION/
+
+  214  python3 -m venv venv
+  215  source venv/bin/activate
+?  216  python3 /usr/bin/odoo --addons-path=addons -d formation
+?  217  python3 /usr/bin/odoo-bin --addons-path=addons -d formation
+?  218  python3 odoo-bin --addons-path=addons -d formation
+  219  deactivate
+  220  /usr/bin/odoo -d formation -i base
+  222  /usr/bin/odoo -d test -i base
+  224  psql
+  225  /usr/bin/odoo -d pi -i base
+  226  psql
+  227  history > /home/pi/history_log_20240816_12h

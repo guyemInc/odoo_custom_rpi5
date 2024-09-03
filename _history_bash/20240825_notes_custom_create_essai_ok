@@ -1,0 +1,188 @@
+
+
+11h53	- Ajustement du addons path dans odoo.conf
+	addons_path = /home/pi/Odoo/FORMATION/odoo/addons, /home/pi/Odoo/FORMATION/odoo/odoo_custom
+
+12h27 : Conclusion : le module a été remis au complet, dans l'état de développement du mois de mars 2024.
+		Il aura fallu suivre les indication de odoo, 
+
+		I. Erreur de chargement des addons, mentionnant un path incorrect : /home/pi/Odoo/FORMATION/odoo/odoo/addons
+			Ajustement du addons path dans odoo.conf
+				addons_path = /home/pi/Odoo/FORMATION/odoo/odoo_custom
+			devient :
+				addons_path = /home/pi/Odoo/FORMATION/odoo/addons, /home/pi/Odoo/FORMATION/odoo/odoo_custom
+
+		II. tiquant sur une partie du xml (attachée à project).
+		Avec uniquement le lien de la vue xml a Contacts, l'activation du module a fonctionné 
+
+		En rechargeant, avec uniquement l'item 3 associé à Projects.. toujours rien
+		En rechargeant à nouveau en passant la sequence de 3 à 93... cela a fonctionné
+		En remettant la sequence à 3, cela fonctionne quand même...
+
+		Bon, bref, on va dire que maintenant je peux continuer... qlq jours de galère tout de même
+
+		Environnemnet ou c'est ok :
+			(formation-env) pi@raspberrypi:~/Odoo/FORMATION/odoo $ python3 odoo-bin -c odoo.conf -d gma_dev_1 -u essai
+
+source ../formation-env/bin/activate
+(formation-env) pi@raspberrypi:~/Odoo/FORMATION/odoo $ python3 odoo-bin -c odoo.conf -d gma_dev_1 -u essai
+
+Activation Esssai : 
+	odoo.tools.convert.ParseError: while parsing /home/pi/Odoo/FORMATION/odoo/odoo_custom/essai/views/label_views.xml:91, somewhere inside
+<menuitem id="essai_ref_profils" name="Profils" action="action_profil" sequence="3" parent="essai_ref_menu_in_projects"/>
+
+Action : Dans label_views.xml, évincement des lignes suivantes
+   <!-- Version menu item list "sans action pour le premier élément  "-->
+    <menuitem id="essai_ref_menu_in_projects"
+        name="Essai Refs"
+        parent="project.menu_main_pm"
+        sequence="3"/>
+
+        <menuitem id="essai_ref_labels"
+            name="Labels"
+            action="action_label"
+            sequence="1" 
+            parent="essai_ref_menu_in_projects"/>
+
+        <!-- <menuitem id="essai_ref_label_versions"
+            name="Labels versions"
+            action="action_label_version"
+            sequence="2" 
+            parent="essai_ref_menu_in_projects"/> -->
+        
+        <menuitem id="essai_ref_profils"
+            name="Profils"
+            action="action_profil"
+            sequence="3" 
+            parent="essai_ref_menu_in_projects"/>
+
+        <menuitem id="essai_ref_repository"
+            name="Referentiels"
+            action="action_repository"
+            sequence="4" 
+            parent="essai_ref_menu_in_projects"/>
+
+
+    <menuitem id="essai_ref_admin_in_projects" name="Administration"
+            parent="essai_ref_menu_in_projects" sequence="5"/>
+
+        <menuitem id="admin_essai_ref_onwers"
+            name="Référents"
+            action="action_owner_ref"
+            sequence="1" 
+            parent="essai_ref_admin_in_projects"/>
+
+        <menuitem id="admin_essai_ref_label_versions"
+            name="Version de labels"
+            action="action_label_version"
+            sequence="2" 
+            parent="essai_ref_admin_in_projects"/>
+
+        <menuitem id="admin_essai_ref_profil_versions"
+            name="Version de profils"
+            action="action_profil_version"
+            sequence="3" 
+            parent="essai_ref_admin_in_projects"/>
+
+        <menuitem id="admin_essai_ref_repository_versions"
+            name="Version de référentiels"
+            action="action_repository_version"
+            sequence="4" 
+            parent="essai_ref_admin_in_projects"/>
+
+# Je retente installation du module essai
+
+(formation-env) pi@raspberrypi:~/Odoo/FORMATION/odoo $ python3 odoo-bin -c odoo.conf -d gma_dev_1 -u essai
+Activation Esssai : 
+
+	Cette fois, c'est bon, pas d'erreur, un onglet label figure bien dans la partie "Contacts"
+
+	Url conservée dans les favoris : http://localhost:8069/web#action=214&model=label&view_type=list&cids=1&menu_id=128
+
+
+# Je retente installation du module essai avec menu dans la partie projets
+
+# Action : Dans label_views.xml, je remet lignes suivantes
+   <!-- Version menu item list "sans action pour le premier élément  "-->
+    <menuitem id="essai_ref_menu_in_projects"
+        name="Essai Refs"
+        parent="project.menu_main_pm"
+        sequence="3"/>
+
+	+ Modification du titre du module dans : 
+# Depuis la console
+	CTRL + C
+	(formation-env) pi@raspberrypi:~/Odoo/FORMATION/odoo $ python3 odoo-bin -c odoo.conf -d gma_dev_1 -u essai
+
+Depuis App Esssai : Je vois bien la description mise à jour
+		=>	Upgrade
+
+	Toujours rien dans la zone Projects
+		Je vérifie avec F12... C'est bien le bon nom de class
+			data-menu-xmlid	: project.menu_main_pm
+
+			<button class="dropdown-toggle" title="Configuration" data-hotkey="4" tabindex="0" aria-expanded="false" data-menu-xmlid="project.menu_project_config"><span data-section="113">Configuration</span></button>
+		Autre bouton du menu
+			<button class="dropdown-toggle" title="Configuration" data-hotkey="4" tabindex="0" aria-expanded="false" data-menu-xmlid="project.menu_project_config"><span data-section="113">Configuration</span></button>
+	
+	Je passe la séquence de 
+		sequence="3"/>
+	=	sequence="93"/>
+
+	Et j'ajoute le bouton suivant
+		        <menuitem id="essai_ref_labels"
+            name="Labels"
+            action="action_label"
+            sequence="1" 
+            parent="essai_ref_menu_in_projects"/>
+
+	CTRL + C
+	(formation-env) pi@raspberrypi:~/Odoo/FORMATION/odoo $ python3 odoo-bin -c odoo.conf -d gma_dev_1 -u essai
+
+	## Youpi, cette fois, j'ai les menus...
+
+	# J'ajoute toute la suite...
+	
+
+Attention reste un truc :::: a inspecter
+
+
+		2024-08-25 10:22:22,177 9457 WARNING gma_dev_1 odoo.fields: Field label.version.label_id: unknown parameter 'onupdate', 
+			if this is an actual parameter you may want to override the method _valid_field_parameter on the relevant model in order to allow it 
+
+
+Remise en place du dépôt odoo_custom en dehors de l'environnement odoo, lié à github
+	pi@raspberrypi:~/Odoo/FORMATION/odoo_custom $ mv /home/pi/Odoo/FORMATION/odoo/odoo_custom  /home/pi/Odoo/odoo_custom_old
+
+	(formation-env) pi@raspberrypi:~/Odoo/FORMATION/odoo $ deactivate
+	pi@raspberrypi:~/Odoo/FORMATION/odoo $ source ../formation-env/bin/activate
+	pi@raspberrypi:~/Odoo/FORMATION/odoo_custom $ mv /home/pi/Odoo/FORMATION/odoo/odoo_custom  /home/pi/Odoo/odoo_custom_old
+
+	# D un point de vue opérationnel, c'est ok, le localhost répond et j'ai bien des données que je peux modifier / ajouter.
+
+	# Redémarrage du rpi pour voir si erreur lors du lancement persiste
+
+
+	Exception in thread odoo.service.httpd:
+		Traceback (most recent call last):
+		  File "/usr/lib/python3.11/threading.py", line 1038, in _bootstrap_inner
+		    self.run()
+		  File "/usr/lib/python3.11/threading.py", line 975, in run
+		    self._target(*self._args, **self._kwargs)
+		  File "/home/pi/Odoo/FORMATION/odoo/odoo/service/server.py", line 516, in http_thread
+		    self.httpd = ThreadedWSGIServerReloadable(self.interface, self.port, self.app)
+				 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+		  File "/home/pi/Odoo/FORMATION/odoo/odoo/service/server.py", line 181, in __init__
+		    super(ThreadedWSGIServerReloadable, self).__init__(host, port, app,
+		  File "/home/pi/Odoo/FORMATION/formation-env/lib/python3.11/site-packages/werkzeug/serving.py", line 688, in __init__
+		    super().__init__(server_address, handler)  # type: ignore
+		    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+		  File "/usr/lib/python3.11/socketserver.py", line 456, in __init__
+		    self.server_bind()
+		  File "/home/pi/Odoo/FORMATION/odoo/odoo/service/server.py", line 197, in server_bind
+		    super(ThreadedWSGIServerReloadable, self).server_bind()
+		  File "/usr/lib/python3.11/http/server.py", line 136, in server_bind
+		    socketserver.TCPServer.server_bind(self)
+		  File "/usr/lib/python3.11/socketserver.py", line 472, in server_bind
+		    self.socket.bind(self.server_address)
+		OSError: [Errno 98] Address already in use

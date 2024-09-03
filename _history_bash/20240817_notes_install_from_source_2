@@ -1,0 +1,185 @@
+
+17/08/2024 : Reprise en travaillant depuis les souces
+		Et ainsi voir si cette fois, les commandes mises dans mes notes fonctionnent
+		Et si cette fois, le repertoire odoo est bien rempli
+		Et si le requirement s'initialise
+
+	!! A retenir : désinstaller postgres est une très très très mauvaise idée. Ici, je repard sur un OS vierge
+
+		Car pour le reste, en principe, démarrer environnement virtuel et instance associée, c'est ok
+
+	https://www.odoo.com/documentation/17.0/administration/on_premise/source.html
+
+13h - Je reprend sur une instance rpi vierge
+	sudo apt update -y && sudo apt upgrade -y
+	mkdir Odoo
+	mkdir Odoo/FORMATION
+	cd Odoo/FORMATION
+	rm -rf odoo
+
+	# C'est parti avec précision de la version. Car a date, c'est la v17.0
+	git clone -b 16.0 https://github.com/odoo/odoo.git
+
+	# Au passage, cela me gratte 10 Go... il en reste 11... soit 33% ca devrait aller
+
+	Filesystem      Size  Used Avail Use% Mounted on
+	Avt
+		Filesystem      Size  Used Avail Use% Mounted on
+		/dev/mmcblk0p2   29G  6.9G   21G  26% /
+	Après
+		/dev/mmcblk0p2   29G   17G   11G  63% /
+
+	# Suite des actions effectuées :
+	##	On Debian/Ubuntu, the following commands should install the required packages:
+	cd odoo #CommunityPath	where clone was done
+	sudo ./setup/debinstall.sh
+
+	# Installation de postgresql
+	sudo apt install postgresql postgresql-client
+	
+	sudo -i -u postgres
+		postgres@raspberrypi:~$ createuser -d -R -S pi
+		postgres@raspberrypi:~$ createdb pi
+			exit
+
+	# Controle des versions
+	python3 --version
+		Python 3.11.2
+	pip3 --version
+		pip3 --version
+
+	# Lancement de l'instance : 
+	python3 odoo-bin --addons-path=addons -d gma_dev_1
+
+	http://localhost:8069 in a web browser 
+
+		1. Set up  admin password
+
+		2. log into the Odoo database 
+			with the base administrator account: use admin as the email and, again, admin as the password.
+			http://localhost:8069/
+			admin
+			admin
+		3. Exit and test create database
+			Aïe :
+				 WARNING ? odoo.http: Logged into database 'zizi', but dbfilter rejects it; logging session out. 
+		3.1 Tenter le odoo.conf et ajouter dbfilter
+			cat Odoo/FORMATION/odoo/odoo.conf 
+				[options]
+				dbfilter = .*
+				####
+				#### odoo from source : bdd access throught http://localhost:8069/
+				####
+				##      gma_dev_1       admin   		admin		# Auto load odoo
+				##      gma_dev_2	guyem@mailo.com		qd;in4965	# Create from http://localhost:8069/
+		3.2 Lancement instance avec odoo.conf
+			python3 odoo-bin --addons-path=addons -d gma_dev_1 -c odoo.conf
+			Create db + connexion ok => gma_dev_2
+
+		=> CTRL+C pour stopper l'instance
+	
+	# Visu pg_hba.conf
+	sudo cat /etc/postgresql/15/main/pg_hba.conf
+		#
+		# Database administrative login by Unix domain socket
+		local   all             postgres                                peer
+
+		# TYPE  DATABASE        USER            ADDRESS                 METHOD
+
+		# "local" is for Unix domain socket connections only
+		local   all             all                                     peer
+		# IPv4 local connections:
+		host    all             all             127.0.0.1/32            scram-sha-256
+		# IPv6 local connections:
+		host    all             all             ::1/128                 scram-sha-256
+		# Allow replication connections from localhost, by a user with the
+		# replication privilege.
+		local   replication     all                                     peer
+		host    replication     all             127.0.0.1/32            scram-sha-256
+		host    replication     all             ::1/128                 scram-sha-256
+
+
+	# Poursuite des installations pour faire tourner odoo dans environnement de DEV
+	#		Et lancer les commandes depuis VS Code
+	
+	# Autre dépendance préconisée lors de la formation
+	#
+	sudo apt-get -y install wkhtmltopdf
+
+	# Tentative de restauration de la bdd "formation" au format zip issue de la VM Ubuntu
+		Depuis localhost:8069... nok...
+
+	# Création d'une bdd formation vide pour ne pas m'emmeler les pinceaux
+		Connexion ok avec login et mdp habituel
+		CTRL+C pour stopper l'instance	
+
+	# Virtual env
+	pi@raspberrypi:~/Odoo/FORMATION $ sudo apt install python3-wheel
+	pi@raspberrypi:~/Odoo/FORMATION $ python3 -m venv venv
+	# 
+	# cela, par contre, veut pas
+	pi@raspberrypi:~/Odoo/FORMATION $ pip3 install -r requirements.txt
+ou
+	pi@raspberrypi:~/Odoo/FORMATION/odoo $ pip3 install -r requirements.txt
+			error: externally-managed-environment
+
+			× This environment is externally managed
+			╰─> To install Python packages system-wide, try apt install
+			    python3-xyz, where xyz is the package you are trying to
+			    install.
+			    
+			    If you wish to install a non-Debian-packaged Python package,
+			    create a virtual environment using python3 -m venv path/to/venv.
+			    Then use path/to/venv/bin/python and path/to/venv/bin/pip. Make
+			    sure you have python3-full installed.
+			    
+			    For more information visit http://rptl.io/venv
+
+			note: If you believe this is a mistake, please contact your Python installation or OS distribution provider. You can override this, at the risk of breaking your Python installation or OS, by passing --break-system-packages.
+			hint: See PEP 668 for the detailed specification.
+
+	pi@raspberrypi:~/Odoo/FORMATION/odoo $ cd ..
+	pi@raspberrypi:~/Odoo/FORMATION $ source venv/bin/activate
+
+	# pour stopper :
+	pi@raspberrypi:~/Odoo/FORMATION $ deactivate
+
+	# Relance de Odoo
+	python3 odoo-bin --addons-path=addons -c odoo.conf -d formation
+
+
+	?? Inconnu au bataillon
+
+	tests ci-dessus infructueux, je passe au plus violent :
+	
+	nano /home/pi/Odoo/FORMATION/odoo/odoo/__init__.py
+		# https://docs.python.org/3/library/zlib.html#zlib.decompressobj
+		# ----------------------------------------------------------
+		#import PyPDF2
+		#
+		#try:
+		#    import zlib
+		#
+		#    def _decompress(data):
+		#        zobj = zlib.decompressobj()
+		#        return zobj.decompress(data)
+		#
+		#    import PyPDF2.filters  # needed after PyPDF2 2.0.0 and before 2.11.0
+		#    PyPDF2.filters.decompress = _decompress
+		#except ImportError:
+		#    pass # no fix required
+
+	Bon, pas mieux, maintenant, c'est : psycopg2
+
+	En dehors du venv... pourtant, tout semble ok
+	pi@raspberrypi:~/Odoo/FORMATION/odoo $ python3 odoo-bin --addons-path=addons -c odoo.conf -d formation
+
+	Visu localhost : ok
+		http://localhost:8069/web?db=formation#action=36&model=ir.module.module&view_type=kanban&cids=1&menu_id=5
+
+	
+		
+	
+
+
+	

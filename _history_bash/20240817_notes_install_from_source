@@ -1,0 +1,272 @@
+
+17/08/2024 : Reprise en travaillant depuis les souces
+		Et ainsi voir si cette fois, les commandes mises dans mes notes fonctionnent
+		Et si cette fois, le repertoire odoo est bien rempli
+		Et si le requirement s'initialise
+
+		Car pour le reste, en principe, démarrer environnement virtuel et instance associée, c'est ok
+
+	https://www.odoo.com/documentation/17.0/administration/on_premise/source.html
+
+	cd Odoo/FORMATION
+	rm -rf odoo
+
+	# Stopper instance installée
+	sudo systemctl stop odoo.service
+
+	# C'est parti avec précision de la version. Car a date, c'est la v17.0
+	git clone -b 16.0 https://github.com/odoo/odoo.git
+
+	# Au passage, cela me gratte 10 Go... il en reste 11... soit 33% ca devrait aller
+
+	Filesystem      Size  Used Avail Use% Mounted on
+	Avt
+		Filesystem      Size  Used Avail Use% Mounted on
+		/dev/mmcblk0p2   29G  6.9G   21G  26% /
+	Après
+		/dev/mmcblk0p2   29G   17G   11G  63% /
+
+	# Controle des versions python installées
+	python3 --version
+		Python 3.11.2
+	pip3 --version
+		pip 23.0.1
+
+	# Installation de postgres
+	sudo apt install postgresql postgresql-client
+
+	# Ajout du user pi et controle fonctionnement psql
+		sudo -i -u postgres
+		postgres@raspberrypi:~$ createuser -d -R -S pi
+		postgres@raspberrypi:~$ createdb pi
+		postgres@raspberrypi:~$ exit
+		pi@raspberrypi:~/Odoo/FORMATION/odoo $ psql
+			psql (15.8 (Debian 15.8-0+deb12u1))
+			Type "help" for help.
+		\q
+
+	# Suite des actions effectuées :
+		##	On Debian/Ubuntu, the following commands should install the required packages:
+	cd odoo #CommunityPath	where clone was done
+	sudo ./setup/debinstall.sh
+
+	sudo apt-get -y install wkhtmltopdf
+
+	# Lancement de l'instance : 
+	python3 odoo-bin --addons-path=addons -d gma_dev_1
+
+
+	http://localhost:8069 in a web browser and log into the Odoo database 
+		with the base administrator account: use admin as the email and, again, admin as the password.
+		http://localhost:8069/
+		admin
+		admin
+
+	=> modifier user préférence dans application	: password : qd;in4965		(instead of admin)
+	=>						mail		guyem@mailo.com	(instead of admin)
+	=>	Done, la connexion à postgres est donc ok
+
+	# ok, mais pas le create db
+	# Créer alors le fichier  et étendre dbfilter
+	pi@raspberrypi:~/Odoo/FORMATION/odoo $ nano odoo.conf
+		[options]
+		admin_password = admin		
+		##		ip46-i4xb-h5eg
+		dbfilter = .*
+
+	# Re Lancement de l'instance : 
+	python3 odoo-bin --addons-path=addons -d gma_dev_1
+
+
+	Config postgresql pour version installée 
+	=> Voir autres fichiers de logs si soucis, car en l'état si Odoo tourne en local pas de raison d'y toucher
+	sudo cat /etc/postgresql/15/main/pg_hba.conf
+		# Database administrative login by Unix domain socket
+		local   all             postgres                                peer
+
+		# TYPE  DATABASE        USER            ADDRESS                 METHOD
+
+		# "local" is for Unix domain socket connections only
+		local   all             all                                     peer
+		# IPv4 local connections:
+		host    all             all             127.0.0.1/32            scram-sha-256
+		# IPv6 local connections:
+		host    all             all             ::1/128                 scram-sha-256
+		# Allow replication connections from localhost, by a user with the
+		# replication privilege.
+		local   replication     all                                     peer
+		host    replication     all             127.0.0.1/32            scram-sha-256
+		host    replication     all             ::1/128                 scram-sha-256
+
+
+	sudo systemctl restart postgresql@15-main
+
+	# Pour mémoire
+		cat odoo/odoo.conf
+		[options]
+			[options]
+			dbfilter = .*
+			####	admin_password = qd;in4965
+			#### odoo from source : bdd access throught http://localhost:8069/
+			####
+			##      gma_dev_1       admin   		admin		# Auto load odoo
+			##      gma_dev_2	guyem@mailo.com		qd;in4965	# Create from http://localhost:8069/
+
+	# Création d'un environnement virtuel pour développer
+	#	Explications ici : https://docs.python.org/fr/3.10/tutorial/venv.html
+
+	pi@raspberrypi:~/Odoo/FORMATION $ python -m venv formation-env
+	pi@raspberrypi:~/Odoo/FORMATION $ source formation-env/bin/activate
+	(formation-env) pi@raspberrypi:~/Odoo/FORMATION $ python3 --version
+		Python 3.11.2
+
+	# Si au lancement depuis l'environnement virtuel
+	#	Exemple ici, erreur de chargement de librairies python... 
+					alors que ok si lancé depuis 	:	pi@raspberrypi:~/Odoo/FORMATION/odoo $
+
+			cat /home/pi/Odoo/FORMATION/odoo/odoo/__init__.py
+			#----------------------------------------------------------
+			# PyPDF2 hack
+			# ensure that zlib does not throw error -5 when decompressing
+			# because some pdf won't fit into allocated memory
+			# https://docs.python.org/3/library/zlib.html#zlib.decompressobj
+			# ----------------------------------------------------------
+			import PyPDF2
+
+	# Autres tests
+		(formation-env) pi@raspberrypi:~/Odoo/FORMATION $ python3
+			Python 3.11.2 (main, May  2 2024, 11:59:08) [GCC 12.2.0] on linux
+			Type "help", "copyright", "credits" or "license" for more information.
+			>>> import PyPDF2
+			Traceback (most recent call last):
+			  File "<stdin>", line 1, in <module>
+			ModuleNotFoundError: No module named 'PyPDF2'
+			>>> exit()
+	!! Aïe... why ?? Car hors du venv, c'est bien ok
+		(formation-env) pi@raspberrypi:~/Odoo/FORMATION $ deactivate
+		pi@raspberrypi:~/Odoo/FORMATION $ python3
+			Python 3.11.2 (main, May  2 2024, 11:59:08) [GCC 12.2.0] on linux
+			Type "help", "copyright", "credits" or "license" for more information.
+			>>> import PyPDF2
+			>>> exit()
+
+	# Pourtant hors environnement de développement, on a bien ce type de librairies
+		pi@raspberrypi:~/Odoo/FORMATION/odoo $ pip3 list | grep PDF
+		PyPDF2                             2.12.1
+	# Et bien aussi dans le fichier requirement
+		cat odoo/requirements.txt | grep PDF
+			PyPDF2==1.26.0 ; python_version <= '3.10'
+			PyPDF2==2.12.1 ; python_version > '3.10'
+
+	##
+	## Redo (ou oubli ?? ) de l'installation
+	##
+	cd odoo
+	pip3 install -r requirements.txt
+
+	...  wait few minutes
+	...	tout ne charge pas très bien... mais absent de mes notes, alors, bon... je note ici
+	...
+	...	Building wheel for python-ldap (pyproject.toml) did not run successfully.
+	...	 _Warning: Package 'slapdtest.certs'
+	...		              This leads to an ambiguous overall configuration. If you want to distribute this
+				      package, please make sure that 'slapdtest.certs' is explicitly added
+				      to the `packages` configuration field.
+			      
+				      Alternatively, you can also rely on setuptools' discovery methods
+				      (for example by using `find_namespace_packages(...)`/`find_namespace:`
+				      instead of `find_packages(...)`/`find:`).
+			      
+				      You can read more about "package discovery" on setuptools documentation page:
+			      
+				      - https://setuptools.pypa.io/en/latest/userguide/package_discovery.html
+			      
+				      If you don't want 'slapdtest.certs' to be distributed and are
+				      already explicitly excluding 'slapdtest.certs' via
+				      `find_namespace_packages(...)/find_namespace` or `find_packages(...)/find`,
+				      you can try to use `exclude_package_data`, or `include-package-data=False` in
+				      combination with a more fine grained `package-data` configuration.
+			      
+				      You can read more about "package data files" on setuptools documentation page:
+			      
+				      - https://setuptools.pypa.io/en/latest/userguide/datafiles.html
+	...	ERROR: Could not build wheels for python-ldap,
+
+	##
+	##	Autre mode d'installation, depuis environnement virtuel
+	## 
+	(formation-env) pi@raspberrypi:~/Odoo/FORMATION $ python -m venv formation-env
+	(formation-env) pi@raspberrypi:~/Odoo/FORMATION $ source formation-env/bin/activate
+	(formation-env) pi@raspberrypi:~/Odoo/FORMATION/odoo $ python3 -m pip install -r requirements.txt 
+			...	wait few
+			...
+			...	ERROR: Failed building wheel for python-ldap
+
+
+	## Simple contrôle dans env virtuel
+		(formation-env) pi@raspberrypi:~/Odoo/FORMATION/odoo $ pip3 list | grep psycopg2
+	## Hors env virtuel
+		pi@raspberrypi:~/Odoo/FORMATION/odoo $ pip3 list | grep psycopg2
+				psycopg2                           2.9.5
+				types-psycopg2                     2.9
+
+
+	## En me reportant a des forums, ici : https://www.codeease.net/programming/python/ERROR-Failed-building-wheel-for-python-ldap
+	## On conseille :
+		sudo apt-get install python3-dev libldap2-dev libsasl2-dev libssl-dev
+		pip3 install python-ldap	
+		#...  nok alors
+		sudo apt install python3-ldap
+			Preparing to unpack .../python3-ldap_3.4.3-2+b2_arm64.deb ...
+			Unpacking python3-ldap (3.4.3-2+b2) ...
+			Setting up python3-pyasn1 (0.4.8-3) ...
+			Setting up python3-pyasn1-modules (0.2.8-1) ...
+			Setting up python3-ldap (3.4.3-2+b2) ...
+
+	## Semblant ok, je retente install des requirements depuis venv
+	(formation-env) pi@raspberrypi:~/Odoo/FORMATION/odoo $ python3 -m pip install -r requirements.txt
+	... pas mieux
+
+	cd ..
+	(formation-env) pi@raspberrypi:~/Odoo/FORMATION $ pip3 install -r odoo/requirements.txt
+	... pas mieux, invoque un soucis avec libpq
+
+	pi@raspberrypi:~/Odoo/FORMATION/odoo $ sudo apt-get install --reinstall libpq-dev
+		The following NEW packages will be installed:
+		  libpq-dev
+		Preparing to unpack .../libpq-dev_15.8-0+deb12u1_arm64.deb ...
+		Unpacking libpq-dev (15.8-0+deb12u1) ...
+		Setting up libpq-dev (15.8-0+deb12u1) ...
+		Processing triggers for man-db (2.11.2-2) ...
+
+	# Je retente
+	(formation-env) pi@raspberrypi:~/Odoo/FORMATION $ pip3 install -r odoo/requirements.txt
+	... plus d'erreurs
+
+	# Test import librairie	=> Yes done
+	(formation-env) pi@raspberrypi:~/Odoo/FORMATION $ python3
+		Python 3.11.2 (main, May  2 2024, 11:59:08) [GCC 12.2.0] on linux
+		Type "help", "copyright", "credits" or "license" for more information.
+		>>> import psycopg2
+
+
+	# Lancement Odoo
+	(formation-env) pi@raspberrypi:~/Odoo/FORMATION $ cd odoo
+	(formation-env) pi@raspberrypi:~/Odoo/FORMATION/odoo $ python3 odoo-bin -c odoo.conf --addons-path=addons -d formation
+
+	# Visu depuis localhot:8069 => Ok
+
+
+	
+
+
+	
+
+
+	# Instructions et paramétrage pour https nginx non suivi, car reste en local
+		
+
+
+
+
+	

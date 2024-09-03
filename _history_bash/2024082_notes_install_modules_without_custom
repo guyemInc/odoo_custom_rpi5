@@ -1,0 +1,125 @@
+
+Dans la gestion d’entreprise, le CRM (Customer Relationship Management ou gestion de la relation client) 
+
+Modules Odoo
+
+	Sources infos : 	https://www.elipce.com/blog/6-fonctionnalites-de-odoo-erp-que-vous-devez-connaitre/
+
+
+	Vente		Gestion commerciale
+				gérer efficacement votre cycle commercial, depuis la création des devis jusqu’à la facturation finale.
+				définition de tarifs spécifiques pour différents clients, groupes de clients ou canaux de distribution.
+				déclinaison des tarifs, qu’ils soient publics ou indexés sur le prix d’achat, avec l’application d’un coefficient.
+				ajuster les tarifs, que ce soit pour répondre aux changements de coûts, mettre en œuvre des promotions temporaires, ou s’adapter à des conditions commerciales spécifiques.
+
+	CRM		vos équipes peuvent :
+				    Suivre toutes les activités relatives à une opportunité commerciale (rendez-vous, devis, propositions commerciales…)
+				    Gérer la segmentation des prospects, le ciblage et le suivi des activités associées.
+				    Visualiser l’historique complet des communications (rendez-vous, appels téléphoniques et mails)
+				    Suivre l’évolution des ventes grâce aux rapports personnalisables
+
+				il est également possible de générer automatiquement des fiches de contact, des modèles de courrier automatisés 
+				(éventuellement avec une demande de signature), 
+				ainsi que de constituer des équipes commerciales pour optimiser la gestion de votre force de vente.
+
+	Facturation	Facturation à la commande, idéale pour l’e-commerce,
+			facturation à la livraison, particulièrement adaptée aux entreprises B2B et au secteur du négoce.
+			Dans les secteurs d’activités tels que le BTP, où la facturation par “avancement” ou “situation” est prédominante, Odoo ERP excelle en offrant une fonctionnalité native pour répondre à ces besoins.
+
+			générer des devis personnalisés, convertir ceux-ci en factures d’un simple clic, et suivre les paiements en temps réel. 
+			Odoo ERP facilite aussi la gestion des échéanciers de paiement, garantissant un suivi efficace des transactions
+
+			Suivi évolutions légales récentes, notamment avec l’obligation, depuis le 1ᵉʳ janvier 2023, 
+				d’émettre des factures d’acompte incluant la TVA (en pourcentage ou en montant) 
+				dans certains secteurs d’activité spécifiques (notamment dans le bâtiment).
+
+	Inventaire
+			Gérez votre stock et vos activités logistiques
+				suivre en temps réel leurs niveaux de stock, anticiper les besoins de réapprovisionnement et minimiser les risques de rupture. 
+				L’interface permet aux utilisateurs de gérer facilement les mouvements de stock, d’organiser les emplacements de manière logique 
+					et d’automatiser les tâches répétitives.
+				fonctionnalités clés telles que :
+					les plans de rangement, 
+					les réceptions en 2 étapes (réception, rangement), 
+					et les réceptions jusqu’à 3 étapes (picking, packing, shipping).
+
+	Services sur site
+			Suivi de vos interventions terrain
+			Odoo : Planifiez et suivez les opérations sur site, le temps et le matériel
+
+
+	RH	
+			Gestion optimale des effectifs au sein de votre entreprise.
+			Accéder à des informations essentielles telles que le profil des employés, les historiques salariaux et les évaluations de performance. 
+			Traçabilité complète des mouvements de personnel, favorisant ainsi une gestion stratégique des effectifs.
+
+			Gestion de la prise en charge des notes de frais ainsi que la gestion des congés, des absences et des RTT. 
+				Demandes de congés via une interface dédiée, 
+				Approbation des demandes en toute simplicité.
+
+		Recrutement					Suivez votre pipeline de recrutement
+		Contrat des employés
+		Gestion des compétences
+		Recrutement - Gestion des compétences
+
+		Présences
+		Déjeuner
+		Notes de frais
+		Congés
+		Parc automobile
+
+		Prestations		? vs Services sur site ?
+
+	Planning
+				Gérez l'horaire de vos employés
+
+	website ??
+
+
+La gestion multi-entrepôts est l’une des caractéristiques phares d’Odoo ERP en matière de logistique.
+
+ 	Source : info en mode développeur
+
+
+Dénomination	Vente			CRM		Facturation	Inventaire	Services sur site	Recrutement	Employés	Présences	barcodes_gs1_nomenclature	Planning
+Nom technique	sale_management		crm		account		stock		industry_fsm		hr_recruitment	hr		hr_attendance					Planning
+
+	
+Dépendances										Non installable !!
+
+analytic						Installé
+
+attachment_indexation												Installé
+
+barcodes																	Installé	Installé
+barcodes_gs1_nomenclature						Installé														
+
+base_setup				Installé	Installé								Installé
+
+calendar				Installé								Installé
+
+contacts				Installé
+
+digest			Installé	Installé	Installé	Installé				Installé
+​
+HR														Installé			Installé
+
+mail					Installé										Installé
+
+phone_validation			Installé
+portal							Installé
+product							Installé	Installé
+resource				Installé										Installé
+
+sale			Installé
+sales_team				Installé								Installé
+
+uom																				Installé
+utm					Installé	
+web																Installé
+web_tour				Installé								Installé
+web_kanban_gauge	
+
+
+
+	

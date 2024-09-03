@@ -1,0 +1,153 @@
+##
+## Suite visite du site : https://medium.com/@nehadbabar/how-to-create-your-first-custom-module-in-odoo-16-35b6e83ae244
+##
+## Usage de la commande odoo-bin scaffold pour déclarer les modules
+##		Cela évite, notamment d'avoir à renseigner le addons-path
+
+
+pi@raspberrypi:~/Odoo/FORMATION/odoo $ python3 odoo-bin scaffold essai odoo_custom
+pi@raspberrypi:~/Odoo/FORMATION/odoo $ ls -l odoo_custom/essai/models/
+total 8
+-rw-r--r-- 1 pi pi  45 Aug 19 22:09 __init__.py
+-rw-r--r-- 1 pi pi 455 Aug 19 22:09 models.py
+
+# Test usage du model proposé
+pi@raspberrypi:~/Odoo/FORMATION/odoo $ cp odoo_custom/essai/models/models.py odoo_custom/essai/essai.py
+pi@raspberrypi:~/Odoo/FORMATION/odoo $ nano odoo_custom/essai/models/essai.py 
+pi@raspberrypi:~/Odoo/FORMATION/odoo $ nano odoo_custom/essai/models/__init__.py 
+pi@raspberrypi:~/Odoo/FORMATION/odoo $ nano odoo_custom/essai/__init__.py 
+
+# Test usage droits proposés
+pi@raspberrypi:~/Odoo/FORMATION/odoo $ nano odoo_custom/essai/security/ir.model.access.csv 
+pi@raspberrypi:~/Odoo/FORMATION/odoo $ nano odoo_custom/essai/__manifest__.py 
+
+# Test usage vue proposés
+pi@raspberrypi:~/Odoo/FORMATION/odoo $ cp odoo_custom/essai/views/views.xml odoo_custom/essai/views/essai.xml
+pi@raspberrypi:~/Odoo/FORMATION/odoo $ nano odoo_custom/essai/views/essai.xml
+
+# Activation de l'environnement
+pi@raspberrypi:~/Odoo/FORMATION $ source formation-env/bin/activate
+(formation-env) pi@raspberrypi:~/Odoo/FORMATION $ cd odoo
+
+# Démarrage Odoo en sollicitant module sans déclarer addons-path
+(formation-env) pi@raspberrypi:~/Odoo/FORMATION/odoo $ python3 odoo-bin -c odoo.conf -d formation -u essai
+
+## !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+## Si pas déjà activé
+## !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+## Accéder à paramètres (globaux)
+## !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+## Tout en bas, cliquer sur : Activer le mode développeur (avec les assets test)
+##
+##		C'est cette action qui permet d'afficher le ? sur les champs et permet de visualisé les id, etc
+##
+##		Merci à cette vidéo pour cela : 
+##				 to odoo development:  How To Create Module In Odoo 16
+##							https://www.youtube.com/watch?v=IeJFxmCG2Qs&list=PLqRRLx0cl0hpu9zH6o8gq6ORBoW5xMtA-&index=4
+##!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+##
+## Depuis localhost, accès au module possible, non activable car erreurs dans le code
+##
+
+# Tentative de recup le code complet de essai histoire de voir
+#
+# Sauvegarde
+pi@raspberrypi:~/Odoo/FORMATION/odoo $ CTRL+C
+pi@raspberrypi:~/Odoo/FORMATION/odoo $ deactivate
+pi@raspberrypi:~/Odoo/FORMATION/odoo $ cp -r odoo_custom/essai  odoo_custom/essai_from_scaffold_20240819
+
+# rapatriement
+pi@raspberrypi:~/Odoo/FORMATION/odoo $ cp -r ../odoo_custom/essai/*  odoo_custom/essai
+pi@raspberrypi:~/Odoo/FORMATION/odoo $ ls -l odoo_custom/essai/models/
+	total 44
+	-rw-r--r-- 1 pi pi  430 Aug 19 22:11 essai.py
+	-rw-r--r-- 1 pi pi  442 Aug 19 22:35 __init__.py
+	-rw-r--r-- 1 pi pi  515 Aug 19 22:35 label.py
+	-rw-r--r-- 1 pi pi  784 Aug 19 22:35 label_version.py
+	-rw-r--r-- 1 pi pi  455 Aug 19 22:09 models.py
+	-rw-r--r-- 1 pi pi  295 Aug 19 22:35 owner_ref.py
+	-rw-r--r-- 1 pi pi  543 Aug 19 22:35 profil.py
+	-rw-r--r-- 1 pi pi  781 Aug 19 22:35 profil_version.py
+
+
+##
+## Module activable depuis interface Odoo
+##
+## Par contre, pas moyen à date d'afficher dans les menus existant de Projet / Contact
+##		Cf tests dans label_views   menu item
+
+
+# Reste des erreurs
+2024-08-19 21:21:36,229 6023 ERROR formation odoo.modules.loading: Some modules have inconsistent states, some dependencies may be missing: ['essai'] 
+
+# ET au 21/08/2024, ene tentant d'activer depuis localhost
+#	Vous essayez d'installer le module "essai" qui dépend du module "projects".
+#		Mais ce dernier n'est pas disponible sur votre système.
+#	Alors que le module est bien là, et modifiable...  pffff
+
+
+2024-08-22 17:47:44,993 5733 WARNING formation odoo.http: Vous essayez d'installer le module "essai" qui dépend du module "projects".
+Mais ce dernier n'est pas disponible sur votre système. 
+
+=> Pourtant depuis manifest_py, on a bien :     
+	'depends': [
+		'base',
+		'contacts',
+		'projects',
+		# 'sales'
+	    ],
+
+=> Malgré différentes mises à jour dans le manifest.py, rien de nouveau côté interface
+=> En décommentant la ligne  dna odoo.conf
+=> Et en lançant l'exectution ainsi :
+	python3 odoo-bin -c odoo.conf --addons-path=addons -d formation -u essai
+
+=> On retourve bien côté Odoo la ligne : "Site web? un site web dont les dependance projects ne sont pas ok"
+=> Tentative d'activation du module :
+	http://localhost:8069/web?db=formation#id=530&cids=1&menu_id=5&action=36&model=ir.module.module&view_type=form
+
+=>	Vous essayez d'installer le module "essai" qui dépend du module "projects".
+
+... pfff...
+=> Test d'une autre commande plus complète, censée rafraichir....
+(formation-env) pi@raspberrypi:~/Odoo/FORMATION/odoo $ python3 odoo-bin -c odoo.conf --addons-path=addons -d formation -u essai --i18n-overwrite --without-demo=WITHOUT_DEMO
+
+... Well, not done at all... même en ajoutant cela à la commande
+--i18n-overwrite --without-demo=WITHOUT_DEMO --stop-after-init
+
+## Pourtant, en provoquant des erreurs (en ôtant addons-path dans la commande), l'url localhost se met en erreur.
+## En rechargeant alors, avec addons-path, cette fois, les modifications "textuelles" dans le manifest.py sont bien visibles dans l'interfarce...
+## A savoir : 	 'summary': 'Sommaire tout simple presque avec depend : base only',
+## Devient : 	Résumé?		Sommaire tout simple presque avec depend : base only
+##	et le module est cette fois installé !!!
+
+## Finalement non... en creusant encore, et en allant sur les infos du module Projects, je découvre que le nom technique est :
+##		Projetc (et pas projets)
+##  En fermant firefox
+##  Et en redémarrant sans les addons
+##  visualisant erreur 404
+##  Recharge avec les addons...
+## La, dans l'onglet informations technique du module essai, j'ai bien :
+		Dépendances	Statut
+		base		Installé
+		contacts	Installé
+		project		Installé
+
+=> Clic sur activer le module essai
+=>	Application => Mise à jour
+=>	Application => Mettre à jour la liste des app
+=>	Application => + => Appliquer des maj planifiées : essai / statut : to install
+
+... C'était presque ca , mais :
+2024-08-22 21:04:34,081 22400 WARNING formation odoo.modules.graph: module essai: not installable, skipped 
+2024-08-22 21:04:34,082 22400 INFO formation odoo.modules.loading: loading 35 modules... 
+2024-08-22 21:04:34,082 22400 INFO formation odoo.modules.loading: 35 modules loaded in 0.00s, 0 queries (+0 extra) 
+2024-08-22 21:04:34,232 22400 ERROR formation odoo.modules.loading: Some modules have inconsistent states, some dependencies may be missing: ['essai'] 
+
+## Reste que les erreurs sont persistantes : 2024-08-22 20:00:27,576 12258 ERROR formation odoo.modules.loading: Some modules have inconsistent states, some dependencies may be missing: ['essai']
+
+
+
+
+# Si ok, on fera un git clone dans le répertoire had-oc

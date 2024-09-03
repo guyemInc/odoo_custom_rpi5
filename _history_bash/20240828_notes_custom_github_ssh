@@ -1,0 +1,54 @@
+##
+## Connection du rpi au dépot github
+##
+
+## Les modules odoo_custom ont été clonés via le lien https... c'est pratique, mais pas suffisant pour ensuite mettre à jour le code
+
+pi@raspberrypi:~/Odoo/FORMATION/odoo_custom $ 
+git remote -v
+	origin	git@github.com:guyemInc/odoo_custom.git (fetch)
+	origin	git@github.com:guyemInc/odoo_custom.git (push)
+
+
+Echo "Configure ssh in github. See : https://docs.github.com/en/authentication/connecting-to-github-with-ssh/adding-a-new-ssh-key-to-your-github-account"
+ ssh-keygen -t ed25519 -C guyem@mailo.com
+ ls -al ~/.ssh
+ ssh-add ~/.ssh/id_ed25519
+ cat ~/.ssh/id_ed25519.pub
+
+##
+## Copier la ligne et la soumettre en tant que ssh key a github
+##	Qlq heures / jours après, un mail de confirmation doit être envoyé pour confirmer l'ajout
+
+## Re cloner le dépot via ssh
+
+cd Odoo/FORMATION/
+cp -R odoo_custom odoo_custom_git_clone_https
+rm -rf odoo_custom
+
+git clone git@github.com:guyemInc/odoo_custom.git
+cd odoo_custom
+git status
+
+cd .. 
+cp odoo_custom_git_clone_https/.gitignore odoo_custom
+git add .gitignore
+git commit -m ".gitignore include __pycache__ folders"
+git push
+
+##
+##  Puis depuis environnement de développement, vérifier si tout est ok
+##
+
+
+  cd ..
+  source ../formation-env/bin/activate
+  python3 odoo-bin -c odoo.conf -d gma_dev_1 -u essai
+
+	## Ok tout est bien la depuis localhost:8069 / project
+
+  CTRL + C
+  deactivate
+
+
+
