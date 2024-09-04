@@ -311,6 +311,23 @@ sudo chmod 755 odooCustomLocalPath/odoo_custom/essai/static/description/icon.png
 
 In progress : see this icon / module in global home menu
 
+src : https://www.odoo.com/fr_FR/forum/aide-1/how-to-display-the-custom-module-app-in-home-page-193755
+
+To add Icon app to Home page and menu home page, add lines below to your view :
+
+```
+<!-- Menu -->
+<menuitem
+id="custom_menu_root"
+name="My Forms"
+web_icon="custom_module,static/description/icon.png"/>
+
+<menuitem id="submenu_custom_menu"
+name="Forms"
+parent="custom_menu_root"
+action="action_my_forms"/>
+```
+
 
 # Backup of jobs on Raspberry for persistence on another system or Raspberry
 
