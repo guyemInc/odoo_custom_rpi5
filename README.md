@@ -300,7 +300,7 @@ Source : https://www.odoo.com/fr_FR/forum/aide-1/upload-and-install-third-party-
     
 Some themes can be usefull / expected for mobil apps.
 
-### Add personal icon du new App
+### Add personal icon to a new custom module
 
 Simply add icon renamed into yout new module : "static/description/icon.png"
 
@@ -309,21 +309,21 @@ Adjust right access to this file
 sudo chmod 755 odooCustomLocalPath/odoo_custom/essai/static/description/icon.png
 ```
 
-In progress : see this icon / module in global home menu
+### Add your new App / Icon to the global Odoo home page and menu home page : 
 
 src : https://www.odoo.com/fr_FR/forum/aide-1/how-to-display-the-custom-module-app-in-home-page-193755
 
-To add Icon app to Home page and menu home page, add lines below to your view :
+Add lines below to your module view :
 
 ```
 <!-- Menu -->
 <menuitem
 id="custom_menu_root"
-name="My Forms"
-web_icon="custom_module,static/description/icon.png"/>
+name="Your Form name"
+web_icon="custom_module_name,static/description/icon.png"/>
 
 <menuitem id="submenu_custom_menu"
-name="Forms"
+name="Form name"
 parent="custom_menu_root"
 action="action_my_forms"/>
 ```
