@@ -55,7 +55,7 @@ Postgres and Odoo will take around 2 Gb space on your hard drive !
 sudo apt update -y && sudo apt upgrade -y
 sudo apt install postgresql -y
 
-# Control installed instance
+## Control installed instance
 pi@raspberrypi:~ $ sudo -i -u postgres
     postgres@raspberrypi:~$ psql
     psql (15.8 (Debian 15.8-0+deb12u1))
@@ -63,7 +63,7 @@ pi@raspberrypi:~ $ sudo -i -u postgres
   exit
 exit
 
-# Purchase installation
+## Purchase installation
 wget -O - https://nightly.odoo.com/odoo.key | sudo gpg --dearmor -o /usr/share/keyrings/odoo-archive-keyring.gpg
 echo 'deb [signed-by=/usr/share/keyrings/odoo-archive-keyring.gpg] https://nightly.odoo.com/16.0/nightly/deb/ ./' | sudo tee /etc/apt/sources.list.d/odoo.list
 sudo apt update -y
@@ -223,7 +223,22 @@ sudo apt update
 sudo apt install libreoffice
 ```
 
-# Connecting modules under development to Odoo
+# Local ressources :
+
+## Accessing semba hard-drive throught local netbox with semba protocol actived
+
+Acced your local netbox to get :
+- IP local : 192.xx.xx.254
+- Storage config name : \\NETBOX\Storage_name
+
+sudo mkdir /mnt/bbox
+sudo mount -t cifs //192.x.x.254/NETBOX/Storage_name /mnt/bbox -o guest,vers=1.0
+ls -l /mnt/bbox
+
+!! Done !
+
+
+## Connecting modules under development to Odoo
 
 Create a folder outside your odooLocalPath : odoo_custom in odooCustomLocalPath.
 It's the only way to manage your code without inter off the official odoo repo
@@ -231,13 +246,13 @@ It's the only way to manage your code without inter off the official odoo repo
 mkdir odooCustomLocalPath/odoo_custom
 ```
 
-## Get your own sources :
+### Get your own sources :
 ```
 cd odooCustomLocalPath/odoo_custom
 git clone https://github.com/your_repo/_source.git
 ```
 
-## Configure odoo.conf with addons-path
+### Configure odoo.conf with addons-path
 Be sure off the addon path locate in your odooLocalPath and ad it like this :
 Doing it this way will avoid errors like : "addons path location not find"
 ```
@@ -245,7 +260,7 @@ nano
         addons_path = odooLocalPath/odoo/addons, odooCustomLocalPath/odoo_custom
 ```
 
-## Launch odoo as developpement instance from python virtual environnement with your own modules
+### Launch odoo as developpement instance from python virtual environnement with your own modules
 
 ```
 pi@raspberrypi:~/odooLocalPath cd odoo
@@ -253,18 +268,18 @@ pi@raspberrypi:~/odooLocalPath/odoo source ../formation-env/bin/activate
 pi@raspberrypi:~/odooLocalPath/odoo python3 odoo-bin -c odoo.conf -d my_odoo_bdd_name -u module_name
 
 ```
-## From your webBrower, install your modules
+### From your webBrower, install your modules
 
 Be sure your developper mode is activate
 Be sure that apps dependancies are already activate
 Reload apps / modules
 Activate modules
 
-### Be carreful off Odoo Errors logs.
+#### Be carreful off Odoo Errors logs.
 Sometimes you have to add views step by step so as not to rush an odoo instance on which modules have never worked.
 Menu items in others app dependancies in my case.
 
-## Default home page view settings
+### Default home page view settings
 
 You can change de default view by choosing in the Applicaton Theme list.
 
@@ -285,7 +300,7 @@ Source : https://www.odoo.com/fr_FR/forum/aide-1/upload-and-install-third-party-
     
 Some themes can be usefull / expected for mobil apps.
 
-## Add personal icon du new App
+### Add personal icon du new App
 
 Simply add icon renamed into yout new module : "static/description/icon.png"
 
